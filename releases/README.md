@@ -2,6 +2,8 @@
 
 [Descargar APK para Android](./Bitacora-Fit-Pro-5.0.2.apk)
 
+Si la descarga del APK queda pendiente en el navegador, prueba la [descarga alternativa en ZIP](./Bitacora-Fit-Pro-5.0.2-instalar.zip). Abre el enlace en el navegador del teléfono; después extrae el ZIP desde **Archivos → Descargas** y abre el APK que contiene. Ambos archivos contienen exactamente la misma aplicación.
+
 Compatible con Android 7.0 o posterior. Abre el archivo en el teléfono y permite instalar aplicaciones desde el navegador o gestor de archivos si Android lo solicita.
 
 Esta compilación incluye el entrenamiento guiado y el nuevo diseño de la versión 5.0.2. Funciona sin conexión.
