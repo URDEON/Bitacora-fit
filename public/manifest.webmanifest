@@ -1,0 +1,17 @@
+{
+  "name": "Bitácora Fit Pro",
+  "short_name": "Bitácora Fit Pro",
+  "description": "Entrenamiento con guía visual multi-imagen, nutrición inteligente, hidratación, evolución física y cronómetro de alta precisión.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#141416",
+  "theme_color": "#D94E28",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

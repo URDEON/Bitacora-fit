@@ -1,0 +1,11 @@
+BITÁCORA FIT PRO 5.0.1 — INSTALACIÓN Y FOTOS
+
+1. Para usar la aplicación, descarga únicamente Bitacora-Fit-Pro-5.0.1-debug.apk y ábrelo para instalar o actualizar. No hace falta descomprimir el APK ni el ZIP del proyecto. Actualiza sin desinstalar para conservar los registros.
+
+2. Las imágenes de los ejercicios van dentro del APK. Las fotos que agregas a la bitácora se guardan como copias privadas de la aplicación. Los reportes y respaldos solo se comparten cuando eliges exportarlos.
+
+3. La carpeta Almacenamiento interno/Download/project/public/exercises contiene imágenes del proyecto extraído en Descargas, fuera de la aplicación instalada. Si la carpeta Download/project contiene únicamente ese proyecto descargado, puedes eliminarla desde Mis archivos para retirar sus imágenes de la galería y recuperar ese espacio. Conserva antes cualquier archivo personal que hayas guardado allí. Borrar esa carpeta de fuentes no desinstala la aplicación ni elimina sus registros privados.
+
+4. El ZIP actualizado del código incluye archivos .nomedia dentro de la carpeta del proyecto para evitar su indexación en la galería si necesitas extraerlo. Ocultar mediante .nomedia no libera espacio: para eso debes eliminar las copias externas que ya no necesitas. La actualización del APK no borra por sí sola las copias antiguas en Descargas.
+
+5. Si importas una foto que ya existía en tu galería, el original sigue siendo tuyo: la app guarda su propia copia interna y no borra la foto original.

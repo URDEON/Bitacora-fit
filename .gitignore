@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.test-build/
+*.tsbuildinfo
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+*.jks
+*.keystore
+.env
+.env.*
+artifacts/
+
+__pycache__/
+*.pyc

@@ -1,0 +1,285 @@
+/* ==========================================================================
+   BITÁCORA FIT PRO — SISTEMA DE TOKENS DE DISEÑO (UI/UX PREMIUM)
+   Preparado para personalización futura de temas (light / dark / auto),
+   paletas cromáticas, densidad visual e intensidad de animaciones.
+   ========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  /* 1. Superficies — Papel Mineral Cálido */
+  --bg-main: #F5F2EB;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #EDE9DF;
+  --bg-input: #FAF8F4;
+  --bg-elevated: rgba(245, 242, 235, 0.94);
+  --bg-dock: rgba(252, 250, 246, 0.96);
+
+  /* 2. Tinta y Jerarquía Textual (contraste WCAG AA verificado) */
+  --text-main: #171615;
+  --text-secondary: #514C45;
+  --text-muted: #6C665D;
+  --text-on-accent: #FFFFFF;
+
+  /* 3. Bordes y Divisores */
+  --border: #E0DBD0;
+  --border-strong: #C7C0B2;
+  --focus-ring: #1B5B96;
+
+  /* 4. Identidad Cromática Semántica (Personalizable) */
+  --brand-primary: #C44320;
+  --brand-primary-hover: #AD3919;
+  --brand-primary-soft: #FCECE7;
+
+  --brand-nutrition: #1E6B4B;
+  --brand-nutrition-hover: #18583D;
+  --brand-nutrition-soft: #E5F4ED;
+
+  --brand-hydration: #1B5B96;
+  --brand-hydration-hover: #154979;
+  --brand-hydration-soft: #E6F0FA;
+
+  --brand-progress: #A15207;
+  --brand-progress-hover: #854205;
+  --brand-progress-soft: #FEF3C7;
+
+  --brand-calm: #394B59;
+  --brand-calm-hover: #2C3B47;
+  --brand-calm-soft: #E8EEF2;
+
+  --danger: #B52D21;
+  --danger-soft: #FDECEB;
+
+  /* Alias semánticos retrocompatibles */
+  --accent: var(--brand-primary);
+  --accent-soft: var(--brand-primary-soft);
+  --accent-green: var(--brand-nutrition);
+  --accent-green-soft: var(--brand-nutrition-soft);
+  --accent-blue: var(--brand-hydration);
+  --accent-blue-soft: var(--brand-hydration-soft);
+  --accent-amber: var(--brand-progress);
+  --accent-amber-soft: var(--brand-progress-soft);
+  --accent-slate: var(--brand-calm);
+  --accent-slate-soft: var(--brand-calm-soft);
+
+  /* Hero de Inicio (Bosque Editorial) */
+  --hero-bg: #1E3F33;
+  --hero-border: #2B5747;
+  --hero-text: #F6F4EE;
+  --hero-muted: #CFE0D8;
+  --hero-cta-bg: #ECCCA7;
+  --hero-cta-text: #1A352B;
+
+  /* 5. Elevación contenida (sin sombras exageradas) */
+  --shadow-xs: none;
+  --shadow: none;
+  --shadow-lg: 0 14px 34px rgba(23, 22, 21, 0.16);
+
+  /* 6. Tipografía */
+  --font-heavy: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-body: 'Archivo', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --text-2xs: 0.72rem;
+  --text-xs: 0.78rem;
+  --text-sm: 0.86rem;
+  --text-base: 0.95rem;
+  --text-md: 1.04rem;
+  --text-lg: 1.28rem;
+  --text-xl: clamp(1.55rem, 5.2vw, 2.05rem);
+
+  /* 7. Escala estricta de espaciado (4 / 8 / 12 / 16 / 24 / 32 px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* 8. Radios de componentes */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-pill: 2px;
+
+  /* 9. Transiciones y microinteracciones (150 - 300 ms) */
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+  --dur-slow: 300ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* 10. Acento contextual por apartado (actualizado por data-section) */
+  --section-accent: var(--accent);
+  --section-accent-soft: var(--accent-soft);
+}
+
+/* Modo Oscuro — Carbón Técnico */
+body.dark-mode,
+:root[data-theme="dark"] body {
+  --bg-main: #0F1114;
+  --bg-card: #17191E;
+  --bg-subtle: #20232B;
+  --bg-input: #131519;
+  --bg-elevated: rgba(15, 17, 20, 0.93);
+  --bg-dock: rgba(20, 22, 27, 0.96);
+
+  --text-main: #F3F0E8;
+  --text-secondary: #BBB5A9;
+  --text-muted: #969084;
+  --text-on-accent: #111215;
+
+  --border: #292D36;
+  --border-strong: #3B404D;
+  --focus-ring: #68B0F8;
+
+  --brand-primary: #F06D49;
+  --brand-primary-hover: #F48364;
+  --brand-primary-soft: rgba(240, 109, 73, 0.15);
+
+  --brand-nutrition: #3ED192;
+  --brand-nutrition-hover: #58DAA2;
+  --brand-nutrition-soft: rgba(62, 209, 146, 0.14);
+
+  --brand-hydration: #62AAFA;
+  --brand-hydration-hover: #7DB8FB;
+  --brand-hydration-soft: rgba(98, 170, 250, 0.15);
+
+  --brand-progress: #F6AD2B;
+  --brand-progress-hover: #F8BD52;
+  --brand-progress-soft: rgba(246, 173, 43, 0.15);
+
+  --brand-calm: #9AB0C4;
+  --brand-calm-hover: #AFC2D3;
+  --brand-calm-soft: rgba(154, 176, 196, 0.15);
+
+  --danger: #FF8B7E;
+  --danger-soft: rgba(255, 139, 126, 0.15);
+
+  --accent: var(--brand-primary);
+  --accent-soft: var(--brand-primary-soft);
+  --accent-green: var(--brand-nutrition);
+  --accent-green-soft: var(--brand-nutrition-soft);
+  --accent-blue: var(--brand-hydration);
+  --accent-blue-soft: var(--brand-hydration-soft);
+  --accent-amber: var(--brand-progress);
+  --accent-amber-soft: var(--brand-progress-soft);
+  --accent-slate: var(--brand-calm);
+  --accent-slate-soft: var(--brand-calm-soft);
+
+  --hero-bg: #182F27;
+  --hero-border: #284C3F;
+  --hero-text: #F4F2EC;
+  --hero-muted: #C6D8CF;
+  --hero-cta-bg: #E8C69F;
+  --hero-cta-text: #162B23;
+
+  --shadow-xs: none;
+  --shadow: none;
+  --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.65);
+}
+
+/* Preparación para tema automático futuro */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="auto"] body {
+    --bg-main: #0F1114;
+    --bg-card: #17191E;
+    --bg-subtle: #20232B;
+    --bg-input: #131519;
+    --bg-elevated: rgba(15, 17, 20, 0.93);
+    --bg-dock: rgba(20, 22, 27, 0.96);
+    --text-main: #F3F0E8;
+    --text-secondary: #BBB5A9;
+    --text-muted: #969084;
+    --text-on-accent: #111215;
+    --border: #292D36;
+    --border-strong: #3B404D;
+    --focus-ring: #68B0F8;
+    --brand-primary: #F06D49;
+    --brand-primary-hover: #F48364;
+    --brand-primary-soft: rgba(240, 109, 73, 0.15);
+    --brand-nutrition: #3ED192;
+    --brand-nutrition-hover: #58DAA2;
+    --brand-nutrition-soft: rgba(62, 209, 146, 0.14);
+    --brand-hydration: #62AAFA;
+    --brand-hydration-hover: #7DB8FB;
+    --brand-hydration-soft: rgba(98, 170, 250, 0.15);
+    --brand-progress: #F6AD2B;
+    --brand-progress-hover: #F8BD52;
+    --brand-progress-soft: rgba(246, 173, 43, 0.15);
+    --brand-calm: #9AB0C4;
+    --brand-calm-hover: #AFC2D3;
+    --brand-calm-soft: rgba(154, 176, 196, 0.15);
+    --danger: #FF8B7E;
+    --danger-soft: rgba(255, 139, 126, 0.15);
+    --accent: var(--brand-primary);
+    --accent-soft: var(--brand-primary-soft);
+    --accent-green: var(--brand-nutrition);
+    --accent-green-soft: var(--brand-nutrition-soft);
+    --accent-blue: var(--brand-hydration);
+    --accent-blue-soft: var(--brand-hydration-soft);
+    --accent-amber: var(--brand-progress);
+    --accent-amber-soft: var(--brand-progress-soft);
+    --accent-slate: var(--brand-calm);
+    --accent-slate-soft: var(--brand-calm-soft);
+  }
+}
+
+/* Paletas prediseñadas opcionales preparadas para futura configuración */
+[data-palette="forest"] {
+  --brand-primary: #1E6B4B;
+  --brand-primary-soft: #E5F4ED;
+  --accent: var(--brand-primary);
+  --accent-soft: var(--brand-primary-soft);
+}
+[data-palette="ocean"] {
+  --brand-primary: #1B5B96;
+  --brand-primary-soft: #E6F0FA;
+  --accent: var(--brand-primary);
+  --accent-soft: var(--brand-primary-soft);
+}
+
+/* Densidad visual configurable */
+[data-density="compact"] {
+  --space-4: 12px;
+  --space-5: 18px;
+  --space-6: 24px;
+}
+
+/* Ambientación diferenciada por apartado */
+[data-section="home"] {
+  --section-accent: var(--accent);
+  --section-accent-soft: var(--accent-soft);
+}
+[data-section="exercises"],
+[data-section="chrono"] {
+  --section-accent: var(--accent);
+  --section-accent-soft: var(--accent-soft);
+}
+[data-section="meals"] {
+  --section-accent: var(--accent-green);
+  --section-accent-soft: var(--accent-green-soft);
+}
+[data-section="progress"] {
+  --section-accent: var(--accent-amber);
+  --section-accent-soft: var(--accent-amber-soft);
+}
+[data-section="export"] {
+  --section-accent: var(--accent-slate);
+  --section-accent-soft: var(--accent-slate-soft);
+}
+
+/* Respeto estricto de reducción de movimiento */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+  }
+}
+
+[data-motion="reduced"] {
+  --dur-fast: 0ms;
+  --dur-base: 0ms;
+  --dur-slow: 0ms;
+}

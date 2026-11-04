@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Viewport calibrado para Samsung Galaxy S20 FE (Físico: 1080x2400px | CSS Viewport: 360x800px / 412x915px, ratio 20:9) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#F4F1EA" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>Bitácora Fit v4 — Edición Samsung S20 FE</title>
+
+  <!-- Fuentes con contraste limpio: Archivo (Gruesa), Plus Jakarta Sans (Delgada/Cuerpo), JetBrains Mono (Cifras/Reloj) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Librerías para exportación a Excel (.xlsx) y PDF (.pdf) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    :root {
+      --bg-main: #F4F1EA;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #EAE5DA;
+      --bg-input: #F9F7F3;
+      --text-main: #18181B;
+      --text-secondary: #57534E;
+      --text-muted: #8A847C;
+      --border: #DDD7CB;
+      --accent: #D94E28;         /* Terracota Deportivo */
+      --accent-soft: #FCECE8;
+      --accent-green: #216E4E;   /* Verde Nutrición */
+      --accent-green-soft: #E5F4EE;
+      --accent-blue: #1D5D9B;    /* Azul Hidratación y Cardio */
+      --accent-blue-soft: #E6F0FA;
+      --accent-amber: #B45309;
+      --accent-amber-soft: #FEF3C7;
+      --shadow: 0 3px 14px rgba(24, 24, 27, 0.05);
+      --font-heavy: 'Archivo', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body.dark-mode {
+      --bg-main: #141416;
+      --bg-card: #1E1E22;
+      --bg-subtle: #28282E;
+      --bg-input: #18181B;
+      --text-main: #F4F1EA;
+      --text-secondary: #B8B3A8;
+      --text-muted: #7C7870;
+      --border: #313138;
+      --accent: #E86A47;
+      --accent-soft: rgba(232, 106, 71, 0.16);
+      --accent-green: #43B07F;
+      --accent-green-soft: rgba(67, 176, 127, 0.16);
+      --accent-blue: #58A0E6;
+      --accent-blue-soft: rgba(88, 160, 230, 0.16);
+      --accent-amber: #F59E0B;
+      --accent-amber-soft: rgba(245, 158, 11, 0.16);
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100dvh;
+      padding-bottom: 84px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Tipografía contrastante */
+    .title-heavy {
+      font-family: var(--font-heavy);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.08;
+    }
+    .text-thin {
+      font-family: var(--font-body);
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .mono-num {
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    /* Contenedor calibrado para el ancho lógico del Samsung S20 FE (360px - 412px) */
+    .s20-container {
+      width: 100%;
+      max-width: 412px;
+      margin: 0 auto;
+      padding: 10px 12px;
+    }
+
+    /* Cabecera compacta para aprovechar los 800px-915px de alto del S20 FE */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 35;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 12px 10px;
+    }
+    .header-inner {
+      max-width: 412px;
+      margin: 0 auto;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 6px;
+    }
+    .app-logo {
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .s20-badge {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    /* Mini indicador flotante si el cronómetro corre en segundo plano */
+    .mini-running-pill {
+      display: none;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      animation: pulseBadge 1.4s infinite;
+    }
+    @keyframes pulseBadge {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .pill-action {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .date-selector {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 6px;
+      align-items: center;
+    }
+    .date-btn {
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .date-input-wrap {
+      height: 34px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+    }
+    .date-input-wrap input[type="date"] {
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      outline: none;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Resumen superior compacto para 360px de ancho */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .sum-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px 4px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .sum-num {
+      font-family: var(--font-heavy);
+      font-size: 0.98rem;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+    .sum-lbl {
+      font-size: 0.62rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Tarjetas con combinación de formas */
+    .card-soft {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px 13px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .card-cut {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px 6px 20px 6px;
+      padding: 14px 13px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+    .ticket-row {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .ticket-row.cardio { border-left-color: var(--accent-blue); }
+    .ticket-row.meal { border-left-color: var(--accent-green); }
+    .ticket-row.water { border-left-color: var(--accent-blue); background: var(--accent-blue-soft); }
+
+    /* Transición entre pestañas */
+    .tab-view { display: none; }
+    .tab-view.active {
+      display: block;
+      animation: fadeUp 0.22s ease-out forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Controles comunes */
+    .lbl {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+    .input-clean, .select-clean {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: 11px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      outline: none;
+      margin-bottom: 10px;
+    }
+    .input-clean:focus, .select-clean:focus {
+      border-color: var(--accent);
+    }
+
+    .cat-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .cat-scroll::-webkit-scrollbar { display: none; }
+    .cat-pill {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .cat-pill.active {
+      background: var(--text-main);
+      color: var(--bg-card);
+      border-color: var(--text-main);
+    }
+
+    .catalog-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 9px;
+      margin-bottom: 10px;
+    }
+    .exercise-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-height: 125px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+    .ex-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 5px 10px;
+      border-radius: 9px;
+      font-size: 0.73rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .ex-chip.selected {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .mode-switcher {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .mode-card {
+      background: var(--bg-input);
+      border: 1.5px solid var(--border);
+      border-radius: 13px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .mode-card .m-title {
+      font-family: var(--font-heavy);
+      font-size: 0.74rem;
+      display: block;
+    }
+    .mode-card .m-sub {
+      font-size: 0.62rem;
+      font-weight: 300;
+      color: var(--text-secondary);
+      display: block;
+      margin-top: 1px;
+    }
+    .mode-card.active {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .mode-card.active.cardio-mode {
+      background: var(--accent-blue-soft);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    /* Grids compactos para 360px */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .number-stepper {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px 6px;
+    }
+    .stepper-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 3px;
+    }
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .step-circle:active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .step-val-input {
+      width: 100%;
+      min-width: 0;
+      text-align: center;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      font-family: var(--font-heavy);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .preset-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .mini-chip {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.71rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .mini-chip.active, .mini-chip:active {
+      background: var(--text-main);
+      color: var(--bg-card);
+      border-color: var(--text-main);
+    }
+
+    .btn-main {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 13px;
+      padding: 12px 14px;
+      font-family: var(--font-heavy);
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-main:active { transform: scale(0.98); }
+    .btn-main.blue { background: var(--accent-blue); }
+    .btn-main.green { background: var(--accent-green); }
+
+    /* =========================================================================
+       ESTILOS DEL APARTADO DEDICADO "CRONÓMETRO"
+       ========================================================================= */
+    .chrono-face {
+      background: var(--bg-input);
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      padding: 18px 12px;
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .chrono-face.alarm-flash {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .chrono-big-digits {
+      font-family: var(--font-mono);
+      font-size: 2.75rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      color: var(--text-main);
+      line-height: 1;
+      margin: 6px 0;
+    }
+    .chrono-status-pill {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      transition: width 0.1s linear;
+    }
+
+    /* Barra de Hidratación por Tomas Separadas */
+    .water-progress-wrap {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+    }
+    .water-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .water-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-blue);
+      transition: width 0.3s ease;
+    }
+    .water-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .water-add-btn {
+      background: var(--accent-blue-soft);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      border-radius: 11px;
+      padding: 9px 6px;
+      font-family: var(--font-heavy);
+      font-size: 0.78rem;
+      cursor: pointer;
+      text-align: center;
+    }
+    .water-add-btn span {
+      display: block;
+      font-family: var(--font-body);
+      font-weight: 400;
+      font-size: 0.64rem;
+      color: var(--text-secondary);
+    }
+    .water-add-btn:active {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    /* Barra de Navegación Inferior de 5 Apartados calibrada para 360px */
+    .bottom-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 6px 6px calc(10px + env(safe-area-inset-bottom, 0px));
+    }
+    .dock-grid {
+      max-width: 412px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+    }
+    .nav-item {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 6px 2px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+    .nav-item svg {
+      width: 19px;
+      height: 19px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+    .nav-item span {
+      font-family: var(--font-heavy);
+      font-size: 0.61rem;
+      letter-spacing: -0.01em;
+    }
+    .nav-item.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .del-btn {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABECERA COMPACTA S20 FE -->
+  <header>
+    <div class="header-inner">
+      <div class="top-bar">
+        <div class="app-logo title-heavy">
+          <span>BITÁCORA FIT</span>
+          <span class="s20-badge">S20 FE • 20:9</span>
+        </div>
+        <div class="header-actions">
+          <button class="mini-running-pill" id="headerChronoBadge" onclick="openTab('chrono', document.querySelectorAll('.nav-item')[2])">01:30</button>
+          <button class="pill-action" onclick="setToday()">Hoy</button>
+          <button class="pill-action" onclick="toggleTheme()" id="themeBtn">Oscuro</button>
+        </div>
+      </div>
+
+      <div class="date-selector">
+        <button class="date-btn" onclick="changeDay(-1)">◀</button>
+        <div class="date-input-wrap">
+          <input type="date" id="currentDate" onchange="renderAll()" />
+        </div>
+        <button class="date-btn" onclick="changeDay(1)">▶</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="s20-container">
+
+    <!-- RESUMEN DEL DÍA EN 4 BLOQUES COMPACTOS (CABE PERFECTO EN 360PX) -->
+    <section class="summary-strip">
+      <div class="sum-box">
+        <div class="sum-num" id="sumStrength">0</div>
+        <div class="sum-lbl">Fuerza</div>
+      </div>
+      <div class="sum-box">
+        <div class="sum-num" id="sumCardio" style="color:var(--accent-blue);">0 min</div>
+        <div class="sum-lbl">Cardio/Bici</div>
+      </div>
+      <div class="sum-box">
+        <div class="sum-num" id="sumKcal" style="color:var(--accent-green);">0</div>
+        <div class="sum-lbl">Kcal Hoy</div>
+      </div>
+      <div class="sum-box">
+        <div class="sum-num" id="sumWater" style="color:var(--accent-blue);">0 ml</div>
+        <div class="sum-lbl">Agua Total</div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         APARTADO 1: EJERCICIOS (PESAS, CARDIO/BICI Y TIEMPO)
+         ====================================================================== -->
+    <section id="view-exercises" class="tab-view active">
+      <div class="card-soft">
+        <h2 class="title-heavy" style="font-size:1.02rem;margin-bottom:3px;">ANOTAR EJERCICIO</h2>
+        <p class="text-thin" style="font-size:0.74rem;margin-bottom:10px;">
+          Elige categoría: en <strong>Cardio y Bici</strong> anotas minutos y km; en <strong>Pesas</strong> anotas series, repeticiones y kg.
+        </p>
+
+        <div class="lbl"><span>1. Categoría muscular o cardio:</span></div>
+        <div class="cat-scroll" id="categoryScroll"></div>
+
+        <div class="catalog-box">
+          <input type="text" id="catalogSearch" class="input-clean" style="margin-bottom:6px;padding:8px 10px;background:var(--bg-card);" placeholder="Buscar ejercicio (ej. Bici, Prensa, Banca, Polea)..." oninput="renderExerciseChips()" />
+          <div class="lbl" style="margin-bottom:4px;">
+            <span id="catalogCountLabel">Toca un ejercicio:</span>
+            <span style="color:var(--accent);cursor:pointer;" onclick="saveCustomExerciseToCatalog()">+ Guardar escrito</span>
+          </div>
+          <div class="exercise-chips-wrap" id="exerciseChipsBox"></div>
+        </div>
+
+        <div class="lbl"><span>2. Nombre del ejercicio:</span></div>
+        <input type="text" id="exNameInput" class="input-clean" placeholder="Ej. Bicicleta estática, Press de banca..." />
+
+        <div class="lbl"><span>3. Tipo de registro:</span></div>
+        <div class="mode-switcher">
+          <div class="mode-card active" id="modeBtnStrength" onclick="setExerciseMode('strength')">
+            <span class="m-title">PESAS</span>
+            <span class="m-sub">Series × Reps × Kg</span>
+          </div>
+          <div class="mode-card cardio-mode" id="modeBtnCardio" onclick="setExerciseMode('cardio')">
+            <span class="m-title">CARDIO / BICI</span>
+            <span class="m-sub">Minutos y Km</span>
+          </div>
+          <div class="mode-card" id="modeBtnTime" onclick="setExerciseMode('time')">
+            <span class="m-title">TIEMPO / ABS</span>
+            <span class="m-sub">Series × Seg</span>
+          </div>
+        </div>
+
+        <!-- MODO PESAS -->
+        <div id="formStrength">
+          <div class="grid-3">
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Series</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('strSets', -1)">-</button>
+                <input type="number" id="strSets" class="step-val-input" value="4" min="1" />
+                <button class="step-circle" onclick="stepInput('strSets', 1)">+</button>
+              </div>
+            </div>
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Reps</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('strReps', -1)">-</button>
+                <input type="number" id="strReps" class="step-val-input" value="10" min="1" />
+                <button class="step-circle" onclick="stepInput('strReps', 1)">+</button>
+              </div>
+            </div>
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Peso (kg)</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('strWeight', -2.5)">-</button>
+                <input type="number" id="strWeight" class="step-val-input" value="40" step="0.5" min="0" />
+                <button class="step-circle" onclick="stepInput('strWeight', 2.5)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODO CARDIO / BICI -->
+        <div id="formCardio" style="display:none;">
+          <div class="preset-row">
+            <button class="mini-chip" onclick="setCardioMins(15)">15 min</button>
+            <button class="mini-chip" onclick="setCardioMins(20)">20 min</button>
+            <button class="mini-chip" onclick="setCardioMins(30)">30 min</button>
+            <button class="mini-chip" onclick="setCardioMins(45)">45 min</button>
+            <button class="mini-chip" onclick="setCardioMins(60)">60 min</button>
+          </div>
+          <div class="grid-3">
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Minutos</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('carMins', -5)">-</button>
+                <input type="number" id="carMins" class="step-val-input" value="30" min="1" />
+                <button class="step-circle" onclick="stepInput('carMins', 5)">+</button>
+              </div>
+            </div>
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Km (opc.)</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('carKm', -1)">-</button>
+                <input type="number" id="carKm" class="step-val-input" value="8" step="0.5" min="0" />
+                <button class="step-circle" onclick="stepInput('carKm', 1)">+</button>
+              </div>
+            </div>
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Ritmo</span></div>
+              <div class="stepper-row">
+                <input type="text" id="carIntensity" class="step-val-input" style="font-size:0.8rem;" value="Moderado" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODO TIEMPO / PLANCHAS -->
+        <div id="formTime" style="display:none;">
+          <div class="grid-2">
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Series</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('timeSets', -1)">-</button>
+                <input type="number" id="timeSets" class="step-val-input" value="3" min="1" />
+                <button class="step-circle" onclick="stepInput('timeSets', 1)">+</button>
+              </div>
+            </div>
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Segundos</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="stepInput('timeSecs', -15)">-</button>
+                <input type="number" id="timeSecs" class="step-val-input" value="45" min="5" />
+                <button class="step-circle" onclick="stepInput('timeSecs', 15)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <input type="text" id="exNotesInput" class="input-clean" placeholder="Nota opcional (ej. subí carga, buen ritmo...)" />
+
+        <button class="btn-main" id="saveExBtn" onclick="saveExercise()">
+          + GUARDAR EJERCICIO
+        </button>
+      </div>
+
+      <div class="card-cut">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h3 class="title-heavy" style="font-size:0.95rem;">EJERCICIOS DE HOY</h3>
+          <span class="text-thin" style="font-size:0.74rem;" id="todayExSummary">0 registros</span>
+        </div>
+        <div id="workoutListContainer"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         APARTADO 2: COMIDAS + TOMAS DE AGUA POR SEPARADO AL INSTANTE
+         ====================================================================== -->
+    <section id="view-meals" class="tab-view">
+      <!-- NUEVO SISTEMA DE HIDRATACIÓN POR TOMAS SEPARADAS (EJ. +500ML AHORA Y +500ML DESPUÉS) -->
+      <div class="card-cut">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+          <div>
+            <h2 class="title-heavy" style="font-size:1rem;color:var(--accent-blue);">REGISTRO DE AGUA POR TOMAS</h2>
+            <p class="text-thin" style="font-size:0.73rem;">
+              Guarda cada vaso o botella que tomes al instante (ej. 500 ml ahora y 500 ml más tarde) y se irán sumando con su hora.
+            </p>
+          </div>
+        </div>
+
+        <div class="water-progress-wrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.76rem;">
+            <span class="mono-num" style="color:var(--accent-blue);" id="waterTotalLabel">Total hoy: 0 ml (0.00 L)</span>
+            <span class="text-thin" id="waterGoalLabel">Meta: 2000 ml</span>
+          </div>
+          <div class="water-bar-bg">
+            <div class="water-bar-fill" id="waterProgressBar"></div>
+          </div>
+        </div>
+
+        <div class="lbl"><span>Guardar toma rápida con 1 toque:</span></div>
+        <div class="water-quick-grid">
+          <button class="water-add-btn" onclick="addWaterIntake(200, 'Vaso chico')">
+            +200 ml
+            <span>Vaso chico</span>
+          </button>
+          <button class="water-add-btn" onclick="addWaterIntake(250, 'Vaso estándar')">
+            +250 ml
+            <span>1 Vaso</span>
+          </button>
+          <button class="water-add-btn" onclick="addWaterIntake(500, 'Botella 500ml')">
+            +500 ml
+            <span>Botella / 2 vasos</span>
+          </button>
+          <button class="water-add-btn" onclick="addWaterIntake(750, 'Shaker / Caramayola')">
+            +750 ml
+            <span>Shaker gym</span>
+          </button>
+          <button class="water-add-btn" onclick="addWaterIntake(1000, 'Botella 1 Litro')">
+            +1000 ml
+            <span>1 Litro</span>
+          </button>
+          <button class="water-add-btn" onclick="focusCustomWater()">
+            Otro ml
+            <span>Personalizado</span>
+          </button>
+        </div>
+
+        <!-- Toma personalizada en ml -->
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px;">
+          <input type="number" id="customWaterMl" class="input-clean" style="margin-bottom:0;" placeholder="Cantidad exacta en ml (ej. 350, 600)..." min="10" step="50" />
+          <button class="btn-main blue" style="width:auto;padding:0 16px;" onclick="addCustomWaterIntake()">
+            + Guardar ml
+          </button>
+        </div>
+
+        <div class="lbl"><span>Tomas de agua guardadas hoy:</span></div>
+        <div id="waterLogsList"></div>
+      </div>
+
+      <!-- ANOTAR COMIDA DEL DÍA -->
+      <div class="card-soft">
+        <h2 class="title-heavy" style="font-size:1.02rem;margin-bottom:3px;">ANOTAR COMIDA DEL DÍA</h2>
+        <p class="text-thin" style="font-size:0.74rem;margin-bottom:10px;">
+          Selecciona cuál comida es, toca un plato frecuente o escribe lo que comiste.
+        </p>
+
+        <div class="lbl"><span>1. Momento del día:</span></div>
+        <div class="cat-scroll" id="mealSlotScroll">
+          <button class="cat-pill active" onclick="selectMealType('Desayuno', this)">Desayuno</button>
+          <button class="cat-pill" onclick="selectMealType('Almuerzo', this)">Almuerzo</button>
+          <button class="cat-pill" onclick="selectMealType('Once / Merienda', this)">Once / Merienda</button>
+          <button class="cat-pill" onclick="selectMealType('Cena', this)">Cena</button>
+          <button class="cat-pill" onclick="selectMealType('Colación / Post-entreno', this)">Post-entreno</button>
+        </div>
+
+        <div class="lbl"><span>2. Platos rápidos (toca para rellenar):</span></div>
+        <div class="preset-row">
+          <button class="mini-chip" onclick="fillQuickFood('Pechuga de pollo con arroz y ensalada', 520, 42)">Pollo con arroz</button>
+          <button class="mini-chip" onclick="fillQuickFood('2 Huevos revueltos con pan y palta', 410, 18)">Huevos con palta</button>
+          <button class="mini-chip" onclick="fillQuickFood('Carne al sartén con papas cocidas', 540, 40)">Carne con papas</button>
+          <button class="mini-chip" onclick="fillQuickFood('Atún con ensalada y arroz', 430, 32)">Atún con arroz</button>
+          <button class="mini-chip" onclick="fillQuickFood('Avena con leche, plátano y proteína', 450, 30)">Avena + Plátano</button>
+          <button class="mini-chip" onclick="fillQuickFood('Yogurt proteico con fruta', 240, 18)">Yogurt proteico</button>
+          <button class="mini-chip" onclick="fillQuickFood('Batido Whey Protein', 140, 25)">Batido Proteína</button>
+          <button class="mini-chip" onclick="fillQuickFood('Fideos con carne molida', 580, 30)">Fideos con carne</button>
+        </div>
+
+        <div class="lbl"><span>3. ¿Qué comiste?</span></div>
+        <input type="text" id="mealDescInput" class="input-clean" placeholder="Ej. 200g pollo con arroz, 2 huevos..." />
+
+        <div class="grid-2">
+          <div>
+            <div class="lbl"><span>Calorías (opc.)</span></div>
+            <input type="number" id="mealKcalInput" class="input-clean" style="margin-bottom:0;" placeholder="Ej. 500" />
+          </div>
+          <div>
+            <div class="lbl"><span>Proteína g (opc.)</span></div>
+            <input type="number" id="mealProtInput" class="input-clean" style="margin-bottom:0;" placeholder="Ej. 35" />
+          </div>
+        </div>
+
+        <button class="btn-main green" onclick="saveMeal()">
+          + GUARDAR COMIDA DEL DÍA
+        </button>
+      </div>
+
+      <div class="card-cut">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <h3 class="title-heavy" style="font-size:0.95rem;">COMIDAS DE HOY</h3>
+          <span class="text-thin" style="font-size:0.74rem;" id="todayMealSummary">0 kcal</span>
+        </div>
+        <div id="mealListContainer"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         APARTADO 3: CRONÓMETRO Y DESCANSO DEDICADO (AUTORRESET + ALARMAS)
+         ====================================================================== -->
+    <section id="view-chrono" class="tab-view">
+      <div class="card-soft">
+        <h2 class="title-heavy" style="font-size:1.05rem;margin-bottom:3px;">CENTRO DE TIEMPOS Y DESCANSO</h2>
+        <p class="text-thin" style="font-size:0.74rem;margin-bottom:10px;">
+          En modo <strong>Descanso (Time Out)</strong>, cuando se acaban los minutos suena tu alarma elegida y <strong>se restablece solo</strong> al tiempo que habías seleccionado al principio.
+        </p>
+
+        <!-- Selector entre Temporizador de Descanso y Cronómetro Libre -->
+        <div class="mode-switcher" style="grid-template-columns:1fr 1fr;margin-bottom:12px;">
+          <div class="mode-card active" id="tabBtnCountdown" onclick="switchChronoMode('countdown')">
+            <span class="m-title">TIEMPO DE DESCANSO</span>
+            <span class="m-sub">Cuenta atrás + Autorreset</span>
+          </div>
+          <div class="mode-card cardio-mode" id="tabBtnStopwatch" onclick="switchChronoMode('stopwatch')">
+            <span class="m-title">CRONÓMETRO LIBRE</span>
+            <span class="m-sub">Para medir bici / cardio</span>
+          </div>
+        </div>
+
+        <!-- Pantalla grande del reloj -->
+        <div class="chrono-face" id="chronoFaceBox">
+          <span class="chrono-status-pill" id="chronoStatusText">LISTO — SE RESTABLECE SOLO AL TERMINAR</span>
+          <div class="chrono-big-digits" id="chronoReadout">01:30.0</div>
+          <div class="text-thin" style="font-size:0.73rem;" id="chronoInitialInfo">
+            Tiempo seleccionado inicial: <strong>01:30 min</strong>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="chronoProgressBar"></div>
+          </div>
+        </div>
+
+        <!-- Botones principales de control -->
+        <div class="grid-2" style="margin-bottom:12px;">
+          <button class="btn-main" id="chronoStartBtn" onclick="toggleChrono()">
+            INICIAR
+          </button>
+          <button class="btn-main" style="background:var(--bg-subtle);color:var(--text-main);border:1px solid var(--border);" onclick="resetChrono()">
+            RESTABLECER A INICIAL
+          </button>
+        </div>
+
+        <!-- Controles exclusivos de Tiempo de Descanso (Presets + Minutos/Segundos exactos) -->
+        <div id="countdownControlsBox">
+          <div class="lbl"><span>1. Tiempos rápidos de descanso (toca para fijar tiempo inicial):</span></div>
+          <div class="preset-row">
+            <button class="mini-chip" onclick="selectInitialCountdown(30, this)">0:30 seg</button>
+            <button class="mini-chip" onclick="selectInitialCountdown(45, this)">0:45 seg</button>
+            <button class="mini-chip" onclick="selectInitialCountdown(60, this)">1:00 min</button>
+            <button class="mini-chip active" onclick="selectInitialCountdown(90, this)">1:30 min</button>
+            <button class="mini-chip" onclick="selectInitialCountdown(120, this)">2:00 min</button>
+            <button class="mini-chip" onclick="selectInitialCountdown(180, this)">3:00 min</button>
+            <button class="mini-chip" onclick="selectInitialCountdown(300, this)">5:00 min</button>
+          </div>
+
+          <div class="lbl"><span>2. O elige tus propios minutos y segundos iniciales:</span></div>
+          <div class="grid-2">
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Minutos iniciales</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="adjustCustomCountdown(-1, 0)">-</button>
+                <input type="number" id="customMinInput" class="step-val-input" value="1" min="0" max="99" onchange="applyCustomCountdownInputs()" />
+                <button class="step-circle" onclick="adjustCustomCountdown(1, 0)">+</button>
+              </div>
+            </div>
+            <div class="number-stepper">
+              <div class="lbl" style="margin-bottom:0;"><span>Segundos iniciales</span></div>
+              <div class="stepper-row">
+                <button class="step-circle" onclick="adjustCustomCountdown(0, -15)">-</button>
+                <input type="number" id="customSecInput" class="step-val-input" value="30" min="0" max="59" step="5" onchange="applyCustomCountdownInputs()" />
+                <button class="step-circle" onclick="adjustCustomCountdown(0, 15)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón exclusivo de Cronómetro Libre para mandar los minutos a Bici/Cardio -->
+        <div id="stopwatchExtraBox" style="display:none;margin-bottom:12px;">
+          <button class="btn-main blue" onclick="sendChronoToCardio()">
+            PASAR ESTOS MINUTOS A MI REGISTRO DE BICI / CARDIO
+          </button>
+        </div>
+
+        <!-- Selector de Sonido de Alarma de Time Out + Botón Probar -->
+        <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">
+          <div class="lbl">
+            <span>3. Sonido de alarma al terminar (Time Out):</span>
+            <strong style="color:var(--accent);">PERSONALIZABLE</strong>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;">
+            <select id="alarmSoundSelect" class="select-clean" style="margin-bottom:0;" onchange="saveAlarmPreference()">
+              <option value="bell">Campana de Boxeo / Gym</option>
+              <option value="digital">Doble Beep Digital Clásico</option>
+              <option value="zen">Acorde Suave (Marimba Zen)</option>
+              <option value="siren">Sirena Intensa (HIIT / Tabata)</option>
+              <option value="pulse">Pulso Grave + Vibración</option>
+            </select>
+            <button class="pill-action" style="height:40px;padding:0 14px;background:var(--accent-soft);color:var(--accent);border-color:var(--accent);" onclick="testSelectedAlarm()">
+              Probar sonido
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         APARTADO 4: HISTORIAL DE DÍAS
+         ====================================================================== -->
+    <section id="view-history" class="tab-view">
+      <div class="card-soft">
+        <h2 class="title-heavy" style="font-size:1.05rem;margin-bottom:3px;">DÍAS ENTRENADOS Y COMIDAS</h2>
+        <p class="text-thin" style="font-size:0.74rem;margin-bottom:10px;">
+          Toca cualquier fecha para cargarla y revisar tus ejercicios, comidas y tomas de agua de ese día.
+        </p>
+        <input type="text" id="historyFilterInput" class="input-clean" placeholder="Buscar por fecha, ejercicio o comida..." oninput="renderHistory()" />
+        <div id="historyListContainer"></div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         APARTADO 5: EXPORTAR A EXCEL, PDF Y WORD
+         ====================================================================== -->
+    <section id="view-export" class="tab-view">
+      <div class="card-soft">
+        <h2 class="title-heavy" style="font-size:1.05rem;margin-bottom:3px;">EXPORTAR TUS REGISTROS</h2>
+        <p class="text-thin" style="font-size:0.74rem;margin-bottom:12px;">
+          Exporta en tablas separadas: <strong>1. Ejercicios de Fuerza</strong>, <strong>2. Cardio y Bici</strong>, <strong>3. Comidas</strong> y <strong>4. Tomas de Agua</strong>.
+        </p>
+
+        <div class="lbl"><span>¿Qué período quieres descargar?</span></div>
+        <div class="mode-switcher" style="grid-template-columns:1fr 1fr;margin-bottom:12px;">
+          <div class="mode-card active" id="expScopeAll" onclick="setExportScope('all')">
+            <span class="m-title">TODO EL HISTORIAL</span>
+            <span class="m-sub">Todos los días</span>
+          </div>
+          <div class="mode-card" id="expScopeDay" onclick="setExportScope('day')">
+            <span class="m-title">SOLO HOY</span>
+            <span class="m-sub">Fecha activa arriba</span>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:9px;">
+          <button class="btn-main green" onclick="exportExcel()">
+            DESCARGAR EN EXCEL (.XLSX)
+          </button>
+          <button class="btn-main" onclick="exportPDF()">
+            DESCARGAR EN PDF (.PDF)
+          </button>
+          <button class="btn-main blue" onclick="exportWord()">
+            DESCARGAR EN WORD (.DOC)
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NAVEGACIÓN INFERIOR DE 5 APARTADOS OPTIMIZADA PARA LOS 360PX DEL S20 FE -->
+  <nav class="bottom-dock">
+    <div class="dock-grid">
+      <button class="nav-item active" onclick="openTab('exercises', this)">
+        <svg viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9v6M22 9v6M6 12h12"/></svg>
+        <span>Ejercicios</span>
+      </button>
+      <button class="nav-item" onclick="openTab('meals', this)">
+        <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        <span>Comidas/Agua</span>
+      </button>
+      <button class="nav-item" onclick="openTab('chrono', this)">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 15 15"/><line x1="9" y1="2" x2="15" y2="2"/></svg>
+        <span>Cronómetro</span>
+      </button>
+      <button class="nav-item" onclick="openTab('history', this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span>Historial</span>
+      </button>
+      <button class="nav-item" onclick="openTab('export', this)">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Exportar</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const STORAGE_KEY = 'bitacora_fit_s20fe_v4';
+
+    // Catálogo extenso de ejercicios (+110 ejercicios)
+    const DEFAULT_CATALOG = {
+      'Cardio y Bici': {
+        mode: 'cardio',
+        items: [
+          'Bicicleta estática', 'Bicicleta de spinning', 'Bicicleta al aire libre',
+          'Caminata en cinta (inclinada)', 'Trote en cinta', 'Correr al aire libre',
+          'Elíptica', 'Escaladora (StairMaster)', 'Remo ergómetro',
+          'Salto de cuerda', 'Circuito HIIT', 'Natación', 'Boxeo en saco',
+          'Burpees', 'Sprints', 'Caminata rápida (Trekking)'
+        ]
+      },
+      'Pecho': {
+        mode: 'strength',
+        items: [
+          'Press de banca plano con barra', 'Press de banca con mancuernas',
+          'Press inclinado con barra', 'Press inclinado con mancuernas',
+          'Press declinado con barra', 'Press de pecho en máquina (Chest Press)',
+          'Press inclinado en máquina', 'Press en máquina Smith',
+          'Aperturas con mancuernas', 'Peck Deck / Mariposa en máquina',
+          'Cruce de poleas altas', 'Cruce de poleas bajas',
+          'Fondos en paralelas', 'Flexiones de brazos (Push-ups)', 'Pull-over con mancuerna'
+        ]
+      },
+      'Espalda': {
+        mode: 'strength',
+        items: [
+          'Jalón al pecho en polea abierta', 'Jalón al pecho con agarre estrecho',
+          'Jalón supino', 'Dominadas pronas', 'Dominadas supinas',
+          'Dominadas asistidas', 'Remo en polea baja (Gironda)',
+          'Remo con barra inclinado', 'Remo con mancuerna a una mano',
+          'Remo en máquina con apoyo en pecho', 'Remo en barra T',
+          'Pull-over en polea alta con cuerda', 'Peso muerto convencional',
+          'Hiperextensiones lumbares', 'Encogimientos de trapecio', 'Face Pull en polea'
+        ]
+      },
+      'Piernas y Glúteos': {
+        mode: 'strength',
+        items: [
+          'Sentadilla libre con barra', 'Sentadilla en máquina Smith',
+          'Sentadilla Hack', 'Sentadilla Goblet con mancuerna',
+          'Prensa de piernas 45°', 'Prensa horizontal',
+          'Extensión de cuádriceps en máquina', 'Peso muerto rumano con barra',
+          'Peso muerto rumano con mancuernas', 'Curl femoral tumbado',
+          'Curl femoral sentado', 'Hip Thrust con barra',
+          'Hip Thrust en máquina', 'Sentadilla búlgara',
+          'Zancadas / Estocadas', 'Máquina de abductores',
+          'Máquina de aductores', 'Patada de glúteo en polea',
+          'Gemelos de pie', 'Gemelos sentado'
+        ]
+      },
+      'Hombros': {
+        mode: 'strength',
+        items: [
+          'Press militar con barra', 'Press de hombros con mancuernas',
+          'Press de hombros en máquina', 'Press Arnold',
+          'Elevaciones laterales con mancuernas', 'Elevaciones laterales en polea',
+          'Elevaciones laterales en máquina', 'Elevaciones frontales',
+          'Pájaros con mancuernas (Posterior)', 'Hombro posterior en máquina',
+          'Remo al mentón', 'Face Pull'
+        ]
+      },
+      'Bíceps y Tríceps': {
+        mode: 'strength',
+        items: [
+          'Curl de bíceps con barra recta', 'Curl de bíceps con barra Z',
+          'Curl alterno con mancuernas', 'Curl martillo',
+          'Curl en banco Scott (Predicador)', 'Curl en banco inclinado',
+          'Curl en polea baja', 'Curl concentrado',
+          'Extensión de tríceps en polea con cuerda', 'Extensión de tríceps con barra',
+          'Press francés con barra Z', 'Extensión tras nuca con mancuerna',
+          'Fondos de tríceps', 'Patada de tríceps'
+        ]
+      },
+      'Abdomen y Tiempo': {
+        mode: 'time',
+        items: [
+          'Plancha abdominal frontal', 'Plancha lateral',
+          'Crunch abdominal', 'Crunch en polea alta',
+          'Elevación de piernas colgado', 'Elevación de piernas en suelo',
+          'Rueda abdominal', 'Giros rusos', 'Bicicleta abdominal', 'Paseo del granjero'
+        ]
+      }
+    };
+
+    let appState = {
+      activeCategory: 'Cardio y Bici',
+      exerciseMode: 'cardio',
+      mealType: 'Desayuno',
+      exportScope: 'all',
+      // Estado optimizado del Cronómetro / Descanso
+      chronoMode: 'countdown',       // Por defecto abre en Tiempo de Descanso
+      chronoRunning: false,
+      chronoStartTimestamp: 0,
+      chronoElapsedMs: 0,
+      initialSelectedMs: 90000,      // Guarda el tiempo seleccionado al principio (ej. 1:30 = 90000ms)
+      chronoIntervalId: null,
+      alarmType: 'bell'
+    };
+
+    function getDB() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return {
+          workouts: Array.isArray(parsed.workouts) ? parsed.workouts : [],
+          meals: Array.isArray(parsed.meals) ? parsed.meals : [],
+          waterLogs: Array.isArray(parsed.waterLogs) ? parsed.waterLogs : [],
+          customCatalog: parsed.customCatalog || {},
+          alarmType: parsed.alarmType || 'bell'
+        };
+      } catch (e) {
+        return { workouts: [], meals: [], waterLogs: [], customCatalog: {}, alarmType: 'bell' };
+      }
+    }
+
+    function saveDB(db) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+    }
+
+    function getTodayISO() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset() * 60000;
+      return new Date(now - offset).toISOString().split('T')[0];
+    }
+
+    function getCurrentTimeHHMM() {
+      const now = new Date();
+      return now.toTimeString().slice(0, 5);
+    }
+
+    function setToday() {
+      document.getElementById('currentDate').value = getTodayISO();
+      renderAll();
+    }
+
+    function changeDay(delta) {
+      const inp = document.getElementById('currentDate');
+      const d = new Date(inp.value + 'T12:00:00');
+      d.setDate(d.getDate() + delta);
+      inp.value = d.toISOString().split('T')[0];
+      renderAll();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      document.getElementById('themeBtn').textContent = isDark ? 'Claro' : 'Oscuro';
+    }
+
+    function openTab(tabName, btnEl) {
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + tabName).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderAll();
+    }
+
+    // =========================================================================
+    // SINTETIZADOR DE 5 SONIDOS DE ALARMA PERSONALIZABLES (WEB AUDIO API)
+    // =========================================================================
+    let sharedAudioCtx = null;
+    function getAudioCtx() {
+      if (!sharedAudioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        sharedAudioCtx = new AudioContextClass();
+      }
+      if (sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume();
+      }
+      return sharedAudioCtx;
+    }
+
+    function playAlarmSound(type) {
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        if (navigator.vibrate) {
+          navigator.vibrate([250, 100, 250, 100, 350]);
+        }
+
+        if (type === 'bell') {
+          // Campana metálica de gimnasio (frecuencia fundamental + armónicos)
+          [587.33, 1174.66, 1760].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = idx === 0 ? 'triangle' : 'sine';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.35 / (idx + 1), now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 1.1);
+          });
+        } else if (type === 'digital') {
+          // Doble Beep Digital clásico (3 pulsos rápidos)
+          [0, 0.16, 0.36].forEach(offset => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(1046.5, now + offset);
+            gain.gain.setValueAtTime(0.18, now + offset);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.11);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + offset);
+            osc.stop(now + offset + 0.11);
+          });
+        } else if (type === 'zen') {
+          // Acorde suave ascendente (C5 - E5 - G5 - C6)
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const start = now + idx * 0.12;
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.28, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.55);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.55);
+          });
+        } else if (type === 'siren') {
+          // Sirena intensa para gimnasio ruidoso
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.linearRampToValueAtTime(1200, now + 0.35);
+          osc.frequency.linearRampToValueAtTime(600, now + 0.7);
+          osc.frequency.linearRampToValueAtTime(1200, now + 1.05);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 1.1);
+        } else if (type === 'pulse') {
+          // Pulso grave profundo
+          [0, 0.35].forEach(offset => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(220, now + offset);
+            gain.gain.setValueAtTime(0.4, now + offset);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.25);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + offset);
+            osc.stop(now + offset + 0.25);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function saveAlarmPreference() {
+      const sel = document.getElementById('alarmSoundSelect').value;
+      appState.alarmType = sel;
+      const db = getDB();
+      db.alarmType = sel;
+      saveDB(db);
+    }
+
+    function testSelectedAlarm() {
+      const sel = document.getElementById('alarmSoundSelect').value;
+      playAlarmSound(sel);
+    }
+
+    // =========================================================================
+    // APARTADO DEDICADO "CRONÓMETRO" CON AUTORRESET AL ESTADO INICIAL
+    // =========================================================================
+    function formatMs(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const secs = String(totalSeconds % 60).padStart(2, '0');
+      const tenths = Math.floor((ms % 1000) / 100);
+      return `${mins}:${secs}.${tenths}`;
+    }
+
+    function formatMinSecShort(ms) {
+      const totalSeconds = Math.round(ms / 1000);
+      const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const secs = String(totalSeconds % 60).padStart(2, '0');
+      return `${mins}:${secs}`;
+    }
+
+    function switchChronoMode(mode) {
+      stopChronoInternal();
+      appState.chronoMode = mode;
+      appState.chronoElapsedMs = 0;
+
+      document.getElementById('tabBtnCountdown').classList.toggle('active', mode === 'countdown');
+      document.getElementById('tabBtnStopwatch').classList.toggle('active', mode === 'stopwatch');
+      document.getElementById('countdownControlsBox').style.display = (mode === 'countdown') ? 'block' : 'none';
+      document.getElementById('stopwatchExtraBox').style.display = (mode === 'stopwatch') ? 'block' : 'none';
+
+      if (mode === 'countdown') {
+        document.getElementById('chronoStatusText').textContent = 'LISTO — SE RESTABLECE SOLO AL TERMINAR';
+      } else {
+        document.getElementById('chronoStatusText').textContent = 'CRONÓMETRO LIBRE EN CERO';
+      }
+      updateChronoUI();
+    }
+
+    function selectInitialCountdown(seconds, chipEl) {
+      stopChronoInternal();
+      appState.initialSelectedMs = seconds * 1000;
+      appState.chronoElapsedMs = 0;
+
+      document.querySelectorAll('#countdownControlsBox .mini-chip').forEach(c => c.classList.remove('active'));
+      if (chipEl) chipEl.classList.add('active');
+
+      document.getElementById('customMinInput').value = Math.floor(seconds / 60);
+      document.getElementById('customSecInput').value = seconds % 60;
+      document.getElementById('chronoStatusText').textContent = 'TIEMPO INICIAL GUARDADO';
+      updateChronoUI();
+    }
+
+    function adjustCustomCountdown(deltaMin, deltaSec) {
+      let mins = parseInt(document.getElementById('customMinInput').value) || 0;
+      let secs = parseInt(document.getElementById('customSecInput').value) || 0;
+      let totalSecs = Math.max(5, (mins + deltaMin) * 60 + (secs + deltaSec));
+      document.getElementById('customMinInput').value = Math.floor(totalSecs / 60);
+      document.getElementById('customSecInput').value = totalSecs % 60;
+      applyCustomCountdownInputs();
+    }
+
+    function applyCustomCountdownInputs() {
+      stopChronoInternal();
+      const mins = Math.max(0, parseInt(document.getElementById('customMinInput').value) || 0);
+      const secs = Math.max(0, parseInt(document.getElementById('customSecInput').value) || 0);
+      const totalSecs = Math.max(5, mins * 60 + secs);
+      appState.initialSelectedMs = totalSecs * 1000;
+      appState.chronoElapsedMs = 0;
+      document.querySelectorAll('#countdownControlsBox .mini-chip').forEach(c => c.classList.remove('active'));
+      document.getElementById('chronoStatusText').textContent = 'TIEMPO PERSONALIZADO FIJADO';
+      updateChronoUI();
+    }
+
+    function toggleChrono() {
+      // Desbloquear Web Audio en el primer toque del usuario
+      getAudioCtx();
+      if (appState.chronoRunning) {
+        stopChronoInternal();
+        document.getElementById('chronoStatusText').textContent = 'PAUSADO';
+        updateChronoUI();
+      } else {
+        startChronoInternal();
+      }
+    }
+
+    function startChronoInternal() {
+      if (appState.chronoRunning) return;
+      appState.chronoRunning = true;
+      appState.chronoStartTimestamp = performance.now() - appState.chronoElapsedMs;
+      document.getElementById('chronoStartBtn').textContent = 'PAUSAR';
+      document.getElementById('chronoFaceBox').classList.remove('alarm-flash');
+      document.getElementById('chronoStatusText').textContent =
+        appState.chronoMode === 'countdown' ? 'DESCANSO EN CURSO...' : 'CRONOMETRANDO ACTIVIDAD...';
+
+      appState.chronoIntervalId = setInterval(() => {
+        appState.chronoElapsedMs = performance.now() - appState.chronoStartTimestamp;
+
+        if (appState.chronoMode === 'countdown') {
+          const remaining = appState.initialSelectedMs - appState.chronoElapsedMs;
+          if (remaining <= 0) {
+            // ¡TIME OUT! Sonar alarma y RESTABLECER AUTOMÁTICAMENTE al tiempo inicial seleccionado
+            handleCountdownTimeOut();
+            return;
+          }
+        }
+        updateChronoUI();
+      }, 80);
+    }
+
+    function handleCountdownTimeOut() {
+      stopChronoInternal();
+      // 1. Tocar sonido de alarma elegido
+      playAlarmSound(appState.alarmType);
+      // 2. Restablecer automáticamente a 0 transcurrido (vuelve exactamente a initialSelectedMs)
+      appState.chronoElapsedMs = 0;
+      // 3. Mostrar aviso visual y dejar listo para volver a iniciar con 1 toque
+      const face = document.getElementById('chronoFaceBox');
+      face.classList.add('alarm-flash');
+      setTimeout(() => face.classList.remove('alarm-flash'), 2200);
+      document.getElementById('chronoStatusText').textContent =
+        `¡TIEMPO CUMPLIDO! RESTABLECIDO A ${formatMinSecShort(appState.initialSelectedMs)}`;
+      updateChronoUI();
+    }
+
+    function stopChronoInternal() {
+      appState.chronoRunning = false;
+      if (appState.chronoIntervalId) {
+        clearInterval(appState.chronoIntervalId);
+        appState.chronoIntervalId = null;
+      }
+      document.getElementById('chronoStartBtn').textContent = 'INICIAR';
+    }
+
+    function resetChrono() {
+      stopChronoInternal();
+      appState.chronoElapsedMs = 0;
+      document.getElementById('chronoFaceBox').classList.remove('alarm-flash');
+      document.getElementById('chronoStatusText').textContent =
+        appState.chronoMode === 'countdown'
+          ? `RESTABLECIDO A ${formatMinSecShort(appState.initialSelectedMs)}`
+          : 'REINICIADO A 00:00.0';
+      updateChronoUI();
+    }
+
+    function updateChronoUI() {
+      let displayMs = appState.chronoElapsedMs;
+      let progressPct = 100;
+
+      if (appState.chronoMode === 'countdown') {
+        displayMs = Math.max(0, appState.initialSelectedMs - appState.chronoElapsedMs);
+        progressPct = appState.initialSelectedMs > 0
+          ? Math.max(0, (displayMs / appState.initialSelectedMs) * 100)
+          : 0;
+        document.getElementById('chronoInitialInfo').innerHTML =
+          `Tiempo seleccionado inicial: <strong>${formatMinSecShort(appState.initialSelectedMs)} min</strong>`;
+      } else {
+        progressPct = 100;
+        document.getElementById('chronoInitialInfo').innerHTML =
+          `Modo libre para medir tu sesión de cardio o bici`;
+      }
+
+      document.getElementById('chronoReadout').textContent = formatMs(displayMs);
+      document.getElementById('chronoProgressBar').style.width = `${progressPct}%`;
+
+      // Actualizar píldora flotante en la cabecera si está corriendo
+      const headerBadge = document.getElementById('headerChronoBadge');
+      if (appState.chronoRunning) {
+        headerBadge.style.display = 'inline-block';
+        headerBadge.textContent = `⏱ ${formatMinSecShort(displayMs)}`;
+      } else {
+        headerBadge.style.display = 'none';
+      }
+    }
+
+    function sendChronoToCardio() {
+      const mins = Math.max(1, Math.round(appState.chronoElapsedMs / 60000));
+      openTab('exercises', document.querySelectorAll('.nav-item')[0]);
+      selectCategory('Cardio y Bici');
+      document.getElementById('carMins').value = mins;
+      if (!document.getElementById('exNameInput').value.trim()) {
+        document.getElementById('exNameInput').value = 'Bicicleta estática';
+      }
+    }
+
+    // =========================================================================
+    // REGISTRO DE AGUA POR SEPARADO AL INSTANTE (EJ. +500ML AHORA Y +500ML LUEGO)
+    // =========================================================================
+    function addWaterIntake(mlAmount, labelDesc) {
+      const ml = parseInt(mlAmount) || 0;
+      if (ml <= 0) return;
+      const date = document.getElementById('currentDate').value;
+      const time = getCurrentTimeHHMM();
+
+      const db = getDB();
+      db.waterLogs.push({
+        id: Date.now() + Math.floor(Math.random() * 1000),
+        date,
+        time,
+        ml,
+        label: labelDesc || 'Toma de agua'
+      });
+      saveDB(db);
+      renderAll();
+    }
+
+    function focusCustomWater() {
+      document.getElementById('customWaterMl').focus();
+    }
+
+    function addCustomWaterIntake() {
+      const inp = document.getElementById('customWaterMl');
+      const ml = parseInt(inp.value) || 0;
+      if (ml <= 0) {
+        alert('Escribe cuántos ml de agua tomaste (ej. 350, 500, 600).');
+        return;
+      }
+      addWaterIntake(ml, 'Toma personalizada');
+      inp.value = '';
+    }
+
+    // =========================================================================
+    // EJERCICIOS Y COMIDAS
+    // =========================================================================
+    function renderCategoryPills() {
+      const categories = Object.keys(DEFAULT_CATALOG);
+      const container = document.getElementById('categoryScroll');
+      container.innerHTML = categories.map(cat => `
+        <button class="cat-pill ${cat === appState.activeCategory ? 'active' : ''}" onclick="selectCategory('${cat}')">
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    function selectCategory(cat) {
+      appState.activeCategory = cat;
+      renderCategoryPills();
+      renderExerciseChips();
+      const defaultMode = DEFAULT_CATALOG[cat]?.mode || 'strength';
+      setExerciseMode(defaultMode);
+    }
+
+    function renderExerciseChips() {
+      const db = getDB();
+      const search = (document.getElementById('catalogSearch').value || '').toLowerCase().trim();
+      const box = document.getElementById('exerciseChipsBox');
+
+      let list = [];
+      if (search.length > 0) {
+        Object.keys(DEFAULT_CATALOG).forEach(cat => {
+          const baseItems = DEFAULT_CATALOG[cat].items;
+          const customItems = (db.customCatalog && db.customCatalog[cat]) ? db.customCatalog[cat] : [];
+          [...baseItems, ...customItems].forEach(name => {
+            if (name.toLowerCase().includes(search)) {
+              list.push({ name, mode: DEFAULT_CATALOG[cat].mode });
+            }
+          });
+        });
+      } else {
+        const cat = appState.activeCategory;
+        const baseItems = DEFAULT_CATALOG[cat]?.items || [];
+        const customItems = (db.customCatalog && db.customCatalog[cat]) ? db.customCatalog[cat] : [];
+        const mode = DEFAULT_CATALOG[cat]?.mode || 'strength';
+        list = [...customItems, ...baseItems].map(name => ({ name, mode }));
+      }
+
+      document.getElementById('catalogCountLabel').textContent = `${list.length} ejercicios (toca uno):`;
+      const currentVal = document.getElementById('exNameInput').value;
+      box.innerHTML = list.map(item => `
+        <button class="ex-chip ${currentVal === item.name ? 'selected' : ''}"
+                onclick="pickExerciseFromChip('${item.name.replace(/'/g, "\\'")}', '${item.mode}')">
+          ${item.name}
+        </button>
+      `).join('');
+    }
+
+    function pickExerciseFromChip(name, mode) {
+      document.getElementById('exNameInput').value = name;
+      setExerciseMode(mode);
+      renderExerciseChips();
+    }
+
+    function saveCustomExerciseToCatalog() {
+      const name = document.getElementById('exNameInput').value.trim();
+      if (!name) {
+        alert('Escribe primero el nombre del ejercicio abajo para guardarlo en tu lista.');
+        return;
+      }
+      const db = getDB();
+      if (!db.customCatalog[appState.activeCategory]) {
+        db.customCatalog[appState.activeCategory] = [];
+      }
+      if (!db.customCatalog[appState.activeCategory].includes(name)) {
+        db.customCatalog[appState.activeCategory].unshift(name);
+        saveDB(db);
+        renderExerciseChips();
+      }
+    }
+
+    function setExerciseMode(mode) {
+      appState.exerciseMode = mode;
+      document.getElementById('modeBtnStrength').classList.toggle('active', mode === 'strength');
+      document.getElementById('modeBtnCardio').classList.toggle('active', mode === 'cardio');
+      document.getElementById('modeBtnTime').classList.toggle('active', mode === 'time');
+
+      document.getElementById('formStrength').style.display = (mode === 'strength') ? 'block' : 'none';
+      document.getElementById('formCardio').style.display = (mode === 'cardio') ? 'block' : 'none';
+      document.getElementById('formTime').style.display = (mode === 'time') ? 'block' : 'none';
+
+      const btn = document.getElementById('saveExBtn');
+      if (mode === 'cardio') {
+        btn.className = 'btn-main blue';
+        btn.textContent = '+ GUARDAR CARDIO / BICI';
+      } else {
+        btn.className = 'btn-main';
+        btn.textContent = '+ GUARDAR EJERCICIO';
+      }
+    }
+
+    function stepInput(id, delta) {
+      const el = document.getElementById(id);
+      const current = parseFloat(el.value) || 0;
+      el.value = Math.max(0, +(current + delta).toFixed(1));
+    }
+
+    function setCardioMins(mins) {
+      document.getElementById('carMins').value = mins;
+    }
+
+    function saveExercise() {
+      const date = document.getElementById('currentDate').value;
+      const name = document.getElementById('exNameInput').value.trim();
+      if (!name) {
+        alert('Toca un ejercicio de la lista o escribe su nombre.');
+        return;
+      }
+      const notes = document.getElementById('exNotesInput').value.trim();
+      const db = getDB();
+
+      const entry = {
+        id: Date.now(),
+        date,
+        category: appState.activeCategory,
+        name,
+        mode: appState.exerciseMode,
+        notes
+      };
+
+      if (appState.exerciseMode === 'strength') {
+        entry.sets = parseInt(document.getElementById('strSets').value) || 1;
+        entry.reps = parseInt(document.getElementById('strReps').value) || 1;
+        entry.weight = parseFloat(document.getElementById('strWeight').value) || 0;
+      } else if (appState.exerciseMode === 'cardio') {
+        entry.minutes = parseFloat(document.getElementById('carMins').value) || 1;
+        entry.distanceKm = parseFloat(document.getElementById('carKm').value) || 0;
+        entry.intensity = document.getElementById('carIntensity').value.trim() || 'Moderado';
+      } else if (appState.exerciseMode === 'time') {
+        entry.sets = parseInt(document.getElementById('timeSets').value) || 1;
+        entry.seconds = parseInt(document.getElementById('timeSecs').value) || 30;
+      }
+
+      db.workouts.push(entry);
+      saveDB(db);
+      document.getElementById('exNotesInput').value = '';
+      renderAll();
+    }
+
+    function selectMealType(type, btnEl) {
+      appState.mealType = type;
+      document.querySelectorAll('#mealSlotScroll .cat-pill').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+    }
+
+    function fillQuickFood(desc, kcal, prot) {
+      document.getElementById('mealDescInput').value = desc;
+      document.getElementById('mealKcalInput').value = kcal;
+      document.getElementById('mealProtInput').value = prot;
+    }
+
+    function saveMeal() {
+      const date = document.getElementById('currentDate').value;
+      const desc = document.getElementById('mealDescInput').value.trim();
+      if (!desc) {
+        alert('Escribe qué comiste o toca un plato frecuente.');
+        return;
+      }
+      const calories = parseInt(document.getElementById('mealKcalInput').value) || 0;
+      const protein = parseInt(document.getElementById('mealProtInput').value) || 0;
+
+      const db = getDB();
+      db.meals.push({
+        id: Date.now(),
+        date,
+        mealType: appState.mealType,
+        time: getCurrentTimeHHMM(),
+        desc,
+        calories,
+        protein
+      });
+      saveDB(db);
+
+      document.getElementById('mealDescInput').value = '';
+      document.getElementById('mealKcalInput').value = '';
+      document.getElementById('mealProtInput').value = '';
+      renderAll();
+    }
+
+    function deleteRecord(collection, id) {
+      const db = getDB();
+      db[collection] = db[collection].filter(item => item.id !== id);
+      saveDB(db);
+      renderAll();
+    }
+
+    // =========================================================================
+    // RENDERIZADO GENERAL DE LA INTERFAZ
+    // =========================================================================
+    function renderAll() {
+      const date = document.getElementById('currentDate').value;
+      const db = getDB();
+
+      const dayWorkouts = db.workouts.filter(w => w.date === date);
+      const dayMeals = db.meals.filter(m => m.date === date);
+      const dayWater = db.waterLogs.filter(w => w.date === date);
+
+      const strengthCount = dayWorkouts.filter(w => w.mode !== 'cardio').length;
+      const cardioMins = dayWorkouts
+        .filter(w => w.mode === 'cardio')
+        .reduce((sum, w) => sum + (Number(w.minutes) || 0), 0);
+      const totalKcal = dayMeals.reduce((sum, m) => sum + (Number(m.calories) || 0), 0);
+      const totalProt = dayMeals.reduce((sum, m) => sum + (Number(m.protein) || 0), 0);
+      const totalWaterMl = dayWater.reduce((sum, w) => sum + (Number(w.ml) || 0), 0);
+
+      document.getElementById('sumStrength').textContent = strengthCount;
+      document.getElementById('sumCardio').textContent = `${cardioMins} min`;
+      document.getElementById('sumKcal').textContent = totalKcal;
+      document.getElementById('sumWater').textContent = `${totalWaterMl} ml`;
+
+      document.getElementById('todayExSummary').textContent = `${dayWorkouts.length} registros`;
+      document.getElementById('todayMealSummary').textContent = `${totalKcal} kcal • ${totalProt}g prot`;
+
+      // Progreso y lista de tomas de agua por separado
+      const waterGoal = 2000;
+      const waterPct = Math.min(100, Math.round((totalWaterMl / waterGoal) * 100));
+      document.getElementById('waterTotalLabel').textContent =
+        `Total hoy: ${totalWaterMl} ml (${(totalWaterMl / 1000).toFixed(2)} L)`;
+      document.getElementById('waterProgressBar').style.width = `${waterPct}%`;
+
+      const wLogBox = document.getElementById('waterLogsList');
+      if (dayWater.length === 0) {
+        wLogBox.innerHTML = `<p class="text-thin" style="font-size:0.78rem;text-align:center;padding:8px 0;">Aún no has guardado tomas de agua hoy.</p>`;
+      } else {
+        wLogBox.innerHTML = dayWater.map(w => `
+          <div class="ticket-row water">
+            <div>
+              <span class="mono-num" style="font-size:0.7rem;color:var(--accent-blue);">${w.time} hrs • ${w.label}</span>
+              <div class="title-heavy" style="font-size:0.92rem;">+${w.ml} ml de agua</div>
+            </div>
+            <button class="del-btn" onclick="deleteRecord('waterLogs', ${w.id})">✕</button>
+          </div>
+        `).join('');
+      }
+
+      // Lista de ejercicios de hoy
+      const wBox = document.getElementById('workoutListContainer');
+      if (dayWorkouts.length === 0) {
+        wBox.innerHTML = `<p class="text-thin" style="text-align:center;padding:12px 0;font-size:0.8rem;">No hay ejercicios anotados en esta fecha.</p>`;
+      } else {
+        wBox.innerHTML = dayWorkouts.map(w => {
+          let detailHTML = '';
+          let rowClass = 'ticket-row';
+          if (w.mode === 'cardio') {
+            rowClass = 'ticket-row cardio';
+            detailHTML = `<strong>${w.minutes} min</strong> ${w.distanceKm ? `• <strong>${w.distanceKm} km</strong>` : ''} • Ritmo: ${w.intensity || 'Moderado'}`;
+          } else if (w.mode === 'time') {
+            detailHTML = `<strong>${w.sets} series</strong> × <strong>${w.seconds} seg</strong>`;
+          } else {
+            detailHTML = `<strong>${w.sets} series</strong> × <strong>${w.reps} reps</strong> ${w.weight ? `con <strong>${w.weight} kg</strong>` : '(Corporal)'}`;
+          }
+
+          return `
+            <div class="${rowClass}">
+              <div>
+                <span class="mono-num" style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;">${w.category}</span>
+                <div class="title-heavy" style="font-size:0.9rem;margin:1px 0;">${w.name}</div>
+                <div class="text-thin" style="font-size:0.76rem;">
+                  ${detailHTML}
+                  ${w.notes ? `<br/><em>Nota: ${w.notes}</em>` : ''}
+                </div>
+              </div>
+              <button class="del-btn" onclick="deleteRecord('workouts', ${w.id})">✕</button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Lista de comidas de hoy
+      const mBox = document.getElementById('mealListContainer');
+      if (dayMeals.length === 0) {
+        mBox.innerHTML = `<p class="text-thin" style="text-align:center;padding:12px 0;font-size:0.8rem;">No hay comidas anotadas en esta fecha.</p>`;
+      } else {
+        mBox.innerHTML = dayMeals.map(m => `
+          <div class="ticket-row meal">
+            <div>
+              <span class="mono-num" style="font-size:0.65rem;color:var(--accent-green);text-transform:uppercase;">${m.mealType} ${m.time ? '• ' + m.time : ''}</span>
+              <div class="title-heavy" style="font-size:0.9rem;margin:1px 0;">${m.desc}</div>
+              <div class="text-thin" style="font-size:0.76rem;">
+                ${m.calories ? `<strong>${m.calories} kcal</strong>` : 'Sin kcal'}
+                ${m.protein ? ` • <strong>${m.protein}g proteína</strong>` : ''}
+              </div>
+            </div>
+            <button class="del-btn" onclick="deleteRecord('meals', ${m.id})">✕</button>
+          </div>
+        `).join('');
+      }
+
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const db = getDB();
+      const filter = (document.getElementById('historyFilterInput').value || '').toLowerCase().trim();
+      const allDates = Array.from(new Set([
+        ...db.workouts.map(w => w.date),
+        ...db.meals.map(m => m.date),
+        ...db.waterLogs.map(w => w.date)
+      ])).sort().reverse();
+
+      const filtered = allDates.filter(d => {
+        if (!filter) return true;
+        if (d.includes(filter)) return true;
+        const wHit = db.workouts.some(w => w.date === d && (w.name.toLowerCase().includes(filter) || w.category.toLowerCase().includes(filter)));
+        const mHit = db.meals.some(m => m.date === d && (m.desc.toLowerCase().includes(filter) || m.mealType.toLowerCase().includes(filter)));
+        return wHit || mHit;
+      });
+
+      const hBox = document.getElementById('historyListContainer');
+      if (filtered.length === 0) {
+        hBox.innerHTML = `<p class="text-thin" style="text-align:center;padding:12px 0;font-size:0.8rem;">Aún no hay fechas registradas.</p>`;
+        return;
+      }
+
+      hBox.innerHTML = filtered.map(d => {
+        const wList = db.workouts.filter(w => w.date === d);
+        const mList = db.meals.filter(m => m.date === d);
+        const waterMl = db.waterLogs.filter(w => w.date === d).reduce((s, x) => s + (Number(x.ml) || 0), 0);
+        const kcal = mList.reduce((s, x) => s + (Number(x.calories) || 0), 0);
+
+        return `
+          <div class="ticket-row" style="cursor:pointer;" onclick="document.getElementById('currentDate').value='${d}';openTab('exercises', document.querySelectorAll('.nav-item')[0]);">
+            <div>
+              <span class="mono-num" style="font-size:0.7rem;color:var(--accent);">FECHA: ${d}</span>
+              <div class="title-heavy" style="font-size:0.88rem;margin:2px 0;">
+                ${wList.length} ejerc. • ${mList.length} comidas (${kcal} kcal) • ${waterMl} ml agua
+              </div>
+            </div>
+            <span class="mono-num" style="font-size:0.72rem;color:var(--accent);">Abrir →</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // EXPORTACIÓN A EXCEL, PDF Y WORD (INCLUYE TOMAS DE AGUA POR SEPARADO)
+    // =========================================================================
+    function setExportScope(scope) {
+      appState.exportScope = scope;
+      document.getElementById('expScopeAll').classList.toggle('active', scope === 'all');
+      document.getElementById('expScopeDay').classList.toggle('active', scope === 'day');
+    }
+
+    function getExportData() {
+      const db = getDB();
+      const activeDate = document.getElementById('currentDate').value;
+      let workouts = [...db.workouts];
+      let meals = [...db.meals];
+      let waterLogs = [...db.waterLogs];
+
+      if (appState.exportScope === 'day') {
+        workouts = workouts.filter(w => w.date === activeDate);
+        meals = meals.filter(m => m.date === activeDate);
+        waterLogs = waterLogs.filter(w => w.date === activeDate);
+      }
+
+      workouts.sort((a, b) => a.date.localeCompare(b.date));
+      meals.sort((a, b) => a.date.localeCompare(b.date));
+      waterLogs.sort((a, b) => a.date.localeCompare(b.date));
+
+      return {
+        strength: workouts.filter(w => w.mode !== 'cardio'),
+        cardio: workouts.filter(w => w.mode === 'cardio'),
+        meals,
+        waterLogs
+      };
+    }
+
+    function exportExcel() {
+      const { strength, cardio, meals, waterLogs } = getExportData();
+      if (!strength.length && !cardio.length && !meals.length && !waterLogs.length) {
+        alert('No hay registros para exportar.');
+        return;
+      }
+
+      const sRows = strength.map(w => ({
+        Fecha: w.date, Categoria: w.category, Ejercicio: w.name,
+        Series: w.sets, Reps_o_Seg: w.mode === 'time' ? `${w.seconds} seg` : w.reps,
+        Peso_Kg: w.weight || 0, Notas: w.notes || ''
+      }));
+      const cRows = cardio.map(c => ({
+        Fecha: c.date, Actividad: c.name, Minutos: c.minutes,
+        Distancia_Km: c.distanceKm || 0, Ritmo: c.intensity || '', Notas: c.notes || ''
+      }));
+      const mRows = meals.map(m => ({
+        Fecha: m.date, Hora: m.time || '', Comida: m.mealType,
+        Alimentos: m.desc, Calorias_Kcal: m.calories || 0, Proteina_g: m.protein || 0
+      }));
+      const wRows = waterLogs.map(w => ({
+        Fecha: w.date, Hora: w.time || '', Cantidad_ml: w.ml, Detalle: w.label || ''
+      }));
+
+      if (typeof XLSX !== 'undefined') {
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sRows.length ? sRows : [{ Info: 'Sin registros' }]), 'Fuerza');
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(cRows.length ? cRows : [{ Info: 'Sin registros' }]), 'Cardio_Bici');
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(mRows.length ? mRows : [{ Info: 'Sin registros' }]), 'Comidas');
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(wRows.length ? wRows : [{ Info: 'Sin registros' }]), 'Tomas_de_Agua');
+        XLSX.writeFile(wb, `Bitacora_Fit_S20FE_${getTodayISO()}.xlsx`);
+      }
+    }
+
+    function exportPDF() {
+      const { strength, cardio, meals, waterLogs } = getExportData();
+      if (!strength.length && !cardio.length && !meals.length && !waterLogs.length) {
+        alert('No hay registros para exportar.');
+        return;
+      }
+
+      if (window.jspdf && window.jspdf.jsPDF) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(15);
+        doc.text('Bitacora Fit — Entrenamiento, Cardio, Comidas y Agua', 14, 16);
+        doc.setFontSize(9);
+        doc.text(`Exportado el: ${getTodayISO()}`, 14, 22);
+
+        let y = 28;
+        if (strength.length > 0) {
+          doc.setFontSize(11);
+          doc.text('1. Ejercicios de Fuerza', 14, y);
+          doc.autoTable({
+            startY: y + 3,
+            head: [['Fecha', 'Categoria', 'Ejercicio', 'Series', 'Reps/Seg', 'Peso']],
+            body: strength.map(w => [w.date, w.category, w.name, w.sets, w.mode === 'time' ? `${w.seconds}s` : w.reps, `${w.weight || 0} kg`]),
+            theme: 'grid',
+            headStyles: { fillColor: [217, 78, 40] }
+          });
+          y = doc.lastAutoTable.finalY + 8;
+        }
+        if (cardio.length > 0) {
+          doc.setFontSize(11);
+          doc.text('2. Cardio y Bicicleta', 14, y);
+          doc.autoTable({
+            startY: y + 3,
+            head: [['Fecha', 'Actividad', 'Minutos', 'Distancia', 'Ritmo']],
+            body: cardio.map(c => [c.date, c.name, `${c.minutes} min`, `${c.distanceKm || 0} km`, c.intensity || '-']),
+            theme: 'grid',
+            headStyles: { fillColor: [29, 93, 155] }
+          });
+          y = doc.lastAutoTable.finalY + 8;
+        }
+        if (meals.length > 0) {
+          doc.setFontSize(11);
+          doc.text('3. Comidas del Dia', 14, y);
+          doc.autoTable({
+            startY: y + 3,
+            head: [['Fecha', 'Hora', 'Comida', 'Alimentos', 'Kcal', 'Proteina']],
+            body: meals.map(m => [m.date, m.time || '-', m.mealType, m.desc, `${m.calories || 0}`, `${m.protein || 0}g`]),
+            theme: 'grid',
+            headStyles: { fillColor: [33, 110, 78] }
+          });
+          y = doc.lastAutoTable.finalY + 8;
+        }
+        if (waterLogs.length > 0) {
+          doc.setFontSize(11);
+          doc.text('4. Tomas de Agua Registradas', 14, y);
+          doc.autoTable({
+            startY: y + 3,
+            head: [['Fecha', 'Hora', 'Cantidad (ml)', 'Detalle']],
+            body: waterLogs.map(w => [w.date, w.time || '-', `${w.ml} ml`, w.label || '']),
+            theme: 'grid',
+            headStyles: { fillColor: [29, 93, 155] }
+          });
+        }
+        doc.save(`Bitacora_Fit_S20FE_${getTodayISO()}.pdf`);
+      }
+    }
+
+    function exportWord() {
+      const { strength, cardio, meals, waterLogs } = getExportData();
+      if (!strength.length && !cardio.length && !meals.length && !waterLogs.length) {
+        alert('No hay registros para exportar.');
+        return;
+      }
+
+      const html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:w="urn:schemas-microsoft-com:office:word"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head><meta charset="utf-8"><title>Bitácora Fit</title>
+        <style>
+          body { font-family: Calibri, Arial, sans-serif; color: #18181B; }
+          h1 { color: #D94E28; }
+          h2 { color: #1D5D9B; margin-top: 16px; }
+          table { border-collapse: collapse; width: 100%; margin-top: 6px; }
+          th, td { border: 1px solid #888; padding: 5px 8px; font-size: 10pt; text-align: left; }
+          th { background-color: #F4F1EA; font-weight: bold; }
+        </style>
+        </head><body>
+        <h1>Bitácora de Entrenamiento, Cardio, Comidas e Hidratación</h1>
+        <p><strong>Exportado el:</strong> ${getTodayISO()}</p>
+        ${strength.length ? `<h2>1. Ejercicios de Fuerza</h2><table><thead><tr><th>Fecha</th><th>Categoría</th><th>Ejercicio</th><th>Series</th><th>Reps/Seg</th><th>Peso</th></tr></thead><tbody>${strength.map(w => `<tr><td>${w.date}</td><td>${w.category}</td><td>${w.name}</td><td>${w.sets}</td><td>${w.mode === 'time' ? w.seconds + 's' : w.reps}</td><td>${w.weight || 0} kg</td></tr>`).join('')}</tbody></table>` : ''}
+        ${cardio.length ? `<h2>2. Cardio y Bicicleta</h2><table><thead><tr><th>Fecha</th><th>Actividad</th><th>Minutos</th><th>Km</th><th>Ritmo</th></tr></thead><tbody>${cardio.map(c => `<tr><td>${c.date}</td><td>${c.name}</td><td>${c.minutes} min</td><td>${c.distanceKm || 0} km</td><td>${c.intensity || '-'}</td></tr>`).join('')}</tbody></table>` : ''}
+        ${meals.length ? `<h2>3. Comidas</h2><table><thead><tr><th>Fecha</th><th>Hora</th><th>Momento</th><th>Alimentos</th><th>Kcal</th><th>Proteína</th></tr></thead><tbody>${meals.map(m => `<tr><td>${m.date}</td><td>${m.time || '-'}</td><td>${m.mealType}</td><td>${m.desc}</td><td>${m.calories || 0}</td><td>${m.protein || 0}g</td></tr>`).join('')}</tbody></table>` : ''}
+        ${waterLogs.length ? `<h2>4. Tomas de Agua</h2><table><thead><tr><th>Fecha</th><th>Hora</th><th>Cantidad</th><th>Detalle</th></tr></thead><tbody>${waterLogs.map(w => `<tr><td>${w.date}</td><td>${w.time || '-'}</td><td>${w.ml} ml</td><td>${w.label || ''}</td></tr>`).join('')}</tbody></table>` : ''}
+        </body></html>
+      `;
+
+      const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Bitacora_Fit_S20FE_${getTodayISO()}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Inicializar al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('currentDate').value = getTodayISO();
+      const db = getDB();
+      appState.alarmType = db.alarmType || 'bell';
+      document.getElementById('alarmSoundSelect').value = appState.alarmType;
+
+      renderCategoryPills();
+      selectCategory('Cardio y Bici');
+      updateChronoUI();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
