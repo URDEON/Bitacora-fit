@@ -43,7 +43,7 @@ python tests/browser_controls.py
 
 ## Android
 
-[Descargar la APK 5.0.3](./releases/Bitacora-Fit-Pro-5.0.3.apk) o su [alternativa ZIP](./releases/Bitacora-Fit-Pro-5.0.3-instalar.zip). Consulta las [instrucciones de instalación y respaldo](./releases/README.md).
+[Descargar la APK 5.0.4](./releases/Bitacora-Fit-Pro-5.0.4.apk) o su [alternativa ZIP](./releases/Bitacora-Fit-Pro-5.0.4-instalar.zip). Consulta las [instrucciones de instalación y respaldo](./releases/README.md).
 
 Requiere JDK 21 y Android SDK 36. Con el SDK configurado:
 
@@ -55,6 +55,12 @@ cd android
 ```
 
 En Linux, si el ZIP original perdió el permiso de ejecución: `chmod +x android/gradlew`. El APK de depuración se genera en `android/app/build/outputs/apk/debug/`. Para distribuir una actualización sobre una instalación existente hay que conservar la misma clave de firma. Las instrucciones históricas de la entrega original se conservan en `ANDROID.md` y `ENTREGA.md`.
+
+## Cambios de la versión 5.0.4
+
+- Home con carrusel circular táctil de cuatro mediciones reales, controles accesibles y hero contextual.
+- Paleta mineral/terracota y glass coherente; pulso unificado en encabezado, icono y splash.
+- Pruebas de gestos, datos, fecha, metas, contraste, temas y movimiento reducido.
 
 ## Cambios de la versión 5.0.3
 

@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Bitácora Fit Pro',
   webDir: 'dist',
   android: {
-    backgroundColor: '#141416',
+    backgroundColor: '#F5F2EB',
     allowMixedContent: false,
   },
   plugins: {
@@ -15,11 +15,11 @@ const config: CapacitorConfig = {
     },
     LocalNotifications: {
       smallIcon: 'ic_stat_timer',
-      iconColor: '#D94E28',
+      iconColor: '#AD4E38',
     },
     StatusBar: {
       overlaysWebView: false,
-      backgroundColor: '#141416',
+      backgroundColor: '#F5F2EB',
     },
   },
 };

@@ -4,14 +4,32 @@
   "description": "Entrenamiento con guía visual multi-imagen, nutrición inteligente, hidratación, evolución física y cronómetro de alta precisión.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#141416",
-  "theme_color": "#D94E28",
+  "background_color": "#F5F2EB",
+  "theme_color": "#F5F2EB",
   "icons": [
     {
       "src": "./app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

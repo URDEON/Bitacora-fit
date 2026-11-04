@@ -1,6 +1,5 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import {
-  Activity,
   ChevronLeft,
   ChevronRight,
   Moon,
@@ -41,6 +40,8 @@ import { ChronoView } from "./components/ChronoView";
 import { RunningChronoBanner } from "./components/RunningChronoBanner";
 import { GuidedWorkoutCoach, type GuidedWorkoutHandle } from "./components/GuidedWorkoutCoach";
 import { GlassNavigation } from "./components/GlassNavigation";
+import { BrandMark } from "./components/BrandMark";
+import { BrandIntro } from "./components/BrandIntro";
 import { BackupExportView as BackupExportViewBase } from "./components/BackupExportView";
 import { ExerciseVisualModal } from "./components/ExerciseVisualModal";
 import { ConfirmDialog, DialogContext, useDialogController } from "./components/ConfirmDialog";
@@ -90,6 +91,7 @@ interface Toast {
 
 export default function App() {
   const [db, setDB] = useState<BitacoraDB | null>(null);
+  const [presentingBrand, setPresentingBrand] = useState(true);
   const dbRef = useRef<BitacoraDB | null>(null);
   const [tab, setTab] = useState<ActiveTab>("home");
   const [currentDate, setCurrentDate] = useState(localDate());
@@ -106,6 +108,12 @@ export default function App() {
   const saveRevision = useRef(0);
   const notify = useCallback((message: string) => setToast({ message }), []);
   const { dialog, dialogApi, resolveCurrent, dismissCurrentDialog } = useDialogController();
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => setPresentingBrand(false), reducedMotion ? 0 : 240);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -308,23 +316,24 @@ export default function App() {
     if (!db) return;
     document.body.classList.toggle("dark-mode", db.darkMode);
     document.documentElement.style.colorScheme = db.darkMode ? "dark" : "light";
+    const themeBackground = getComputedStyle(document.body).getPropertyValue("--bg-main").trim();
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", db.darkMode ? "#111114" : "#F4F1EA");
+      ?.setAttribute("content", themeBackground);
     if (Capacitor.isNativePlatform()) {
       void SystemBars.setStyle({
         style: db.darkMode ? SystemBarsStyle.Dark : SystemBarsStyle.Light,
         bar: SystemBarType.StatusBar,
       }).catch(() => {});
       void SystemBars.setStyle({
-        style: SystemBarsStyle.Dark,
+        style: db.darkMode ? SystemBarsStyle.Dark : SystemBarsStyle.Light,
         bar: SystemBarType.NavigationBar,
       }).catch(() => {});
       void StatusBar.setStyle({
         style: db.darkMode ? Style.Dark : Style.Light,
       }).catch(() => {});
       void StatusBar.setBackgroundColor({
-        color: db.darkMode ? "#111114" : "#F4F1EA",
+        color: themeBackground,
       }).catch(() => {});
     }
   }, [db?.darkMode]);
@@ -452,14 +461,7 @@ export default function App() {
         <ConfirmDialog dialog={dialog} onResolve={resolveCurrent} />
       </DialogContext.Provider>
     );
-  if (!db)
-    return (
-      <main className="loading-screen" aria-live="polite">
-        <Activity size={40} />
-        <h1>Bitácora Fit Pro</h1>
-        <p>Abriendo tu bitácora…</p>
-      </main>
-    );
+  if (!db || presentingBrand) return <BrandIntro dark={db?.darkMode} />;
 
   const deleteRecord = (
     collection: "workouts" | "meals" | "waterLogs" | "bodyMetrics",
@@ -542,9 +544,7 @@ export default function App() {
           <div className="header-inner">
             <div className="top-bar">
               <div className="brand">
-                <span className="brand-mark" aria-hidden="true">
-                  <Activity size={19} />
-                </span>
+                <BrandMark className="brand-mark" />
                 <div>
                   <span className="app-logo title-heavy">
                     Bitácora Fit <strong>Pro</strong>

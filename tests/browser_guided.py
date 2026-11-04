@@ -30,6 +30,8 @@ with sync_playwright() as p:
     page.clock.install()
     page.clock.pause_at(datetime.now(timezone.utc) + timedelta(seconds=60))
     page.goto(BASE_URL)
+    # Let the brief brand presentation finish while the test clock is paused.
+    page.clock.fast_forward(300)
     page.get_by_role("button", name="Entrenar", exact=True).click()
     coach = page.locator(".guided-workout")
 
@@ -67,6 +69,7 @@ with sync_playwright() as p:
     page.clock.fast_forward(30000)
     expect(coach.get_by_role("timer")).to_have_text(paused)
     page.reload()
+    page.clock.fast_forward(300)
     phase("preparing")
     expect(coach.get_by_role("timer")).to_have_text(paused)
     coach.get_by_role("button", name="Reanudar entrenamiento", exact=True).click()
@@ -78,6 +81,7 @@ with sync_playwright() as p:
     phase("work")
     assert not workouts(), "El tiempo nunca debe completar una serie sin confirmación"
     page.reload()
+    page.clock.fast_forward(300)
     phase("work")
 
     print("phase: manual completion, rest, final save", flush=True)
@@ -95,6 +99,7 @@ with sync_playwright() as p:
     recorded = workouts()[0]
     assert recorded["sets"] == 2 and recorded["restSeconds"] == 1
     page.reload()
+    page.clock.fast_forward(300)
     phase("complete")
     assert len(workouts()) == 1, "Recargar no debe duplicar el registro"
     coach.get_by_role("button", name="Cerrar entrenamiento", exact=True).click()

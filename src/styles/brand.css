@@ -1,0 +1,65 @@
+/* One emblem, from the launcher to the header. Its square never stretches. */
+.brand-emblem,
+.brand-mark.brand-emblem {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  object-fit: contain;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.brand-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+.brand-intro[data-theme="dark"] {
+  background: var(--brand-launch-dark-background);
+  color: var(--brand-launch-dark-text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-intro:not([data-theme]) {
+    background: var(--brand-launch-dark-background);
+    color: var(--brand-launch-dark-text);
+  }
+}
+
+.brand-intro-content {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  animation: brand-arrive 240ms ease-out both;
+}
+
+.brand-intro .brand-emblem {
+  width: 96px;
+  height: 96px;
+}
+
+.brand-intro h1 {
+  margin: 0;
+  font-size: clamp(19px, 5vw, 24px);
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
+
+@keyframes brand-arrive {
+  from { opacity: .2; transform: translateY(4px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-intro-content { animation: none; }
+}

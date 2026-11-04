@@ -11,6 +11,7 @@ import App from "./App";
 import "./styles/fieldbook.css";
 import "./styles/controls.css";
 import "./styles/glass.css";
+import "./styles/home.css";
 
 class ErrorBoundary extends React.Component<
   React.PropsWithChildren,
