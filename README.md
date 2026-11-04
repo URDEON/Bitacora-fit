@@ -42,6 +42,8 @@ python tests/browser_guided.py
 
 ## Android
 
+[Descargar la APK 5.0.2](./releases/Bitacora-Fit-Pro-5.0.2.apk). Consulta las [instrucciones de instalación y respaldo](./releases/README.md), especialmente si ya tienes instalada la entrega anterior.
+
 Requiere JDK 21 y Android SDK 36. Con el SDK configurado:
 
 ```sh
