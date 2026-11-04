@@ -1,0 +1,81 @@
+/* Controls size from their contents. A clipped page can hide overflowing buttons,
+   so each stepper must fit within its own grid cell at every text size. */
+.grid-2.measurement-controls,
+.grid-3.measurement-controls {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 12px 20px;
+}
+
+.number-stepper {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.measurement-controls .number-stepper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
+  padding: 12px 0;
+}
+
+.measurement-controls .number-stepper > .lbl {
+  flex: 1 1 7rem;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.measurement-controls .stepper-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  flex: 1 1 11rem;
+  width: 11rem;
+  max-width: 100%;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+.measurement-controls .step-circle {
+  width: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  flex: none;
+}
+
+.measurement-controls .step-val-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 4px 2px;
+  margin: 0;
+  font-size: 1.15rem;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.measurement-controls .step-val-input::-webkit-inner-spin-button,
+.measurement-controls .step-val-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* The intensity field has no +/- buttons. */
+.measurement-controls .stepper-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.measurement-controls .field-error {
+  flex: 1 0 100%;
+}
+
+.measurement-controls .step-val-input:focus-visible {
+  outline-offset: -2px;
+}
+
+.date-input-wrap input[type="date"] {
+  color-scheme: inherit;
+}

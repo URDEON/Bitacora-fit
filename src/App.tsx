@@ -3,14 +3,9 @@ import {
   Activity,
   ChevronLeft,
   ChevronRight,
-  Dumbbell,
-  Home,
   Moon,
-  Settings,
   Sun,
   Timer,
-  TrendingUp,
-  Utensils,
   X,
 } from "lucide-react";
 import {
@@ -45,6 +40,7 @@ import { ProgressHistoryView as ProgressHistoryViewBase } from "./components/Pro
 import { ChronoView } from "./components/ChronoView";
 import { RunningChronoBanner } from "./components/RunningChronoBanner";
 import { GuidedWorkoutCoach, type GuidedWorkoutHandle } from "./components/GuidedWorkoutCoach";
+import { GlassNavigation } from "./components/GlassNavigation";
 import { BackupExportView as BackupExportViewBase } from "./components/BackupExportView";
 import { ExerciseVisualModal } from "./components/ExerciseVisualModal";
 import { ConfirmDialog, DialogContext, useDialogController } from "./components/ConfirmDialog";
@@ -526,13 +522,6 @@ export default function App() {
       }),
       "250 ml de agua guardados",
     );
-  const nav = [
-    { id: "home" as const, label: "Inicio", icon: Home },
-    { id: "exercises" as const, label: "Entrenar", icon: Dumbbell },
-    { id: "meals" as const, label: "Alimentación", icon: Utensils },
-    { id: "progress" as const, label: "Progreso", icon: TrendingUp },
-    { id: "export" as const, label: "Ajustes", icon: Settings },
-  ];
   const saveDotClass = storageError
     ? "error-dot"
     : saveStatus === "Guardando…"
@@ -1011,21 +1000,7 @@ export default function App() {
           />
         </div>
       </main>
-      <nav className="bottom-dock" aria-label="Navegación principal">
-        <div className="dock-grid">
-          {nav.map((item) => (
-            <button
-              key={item.id}
-              className={`nav-item ${tab === item.id ? "active" : ""}`}
-              aria-current={tab === item.id ? "page" : undefined}
-              onClick={() => goTo(item.id, { resetOnHome: item.id === "home" })}
-            >
-              <item.icon size={21} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </div>
-      </nav>
+      <GlassNavigation active={tab} onNavigate={(next) => goTo(next, { resetOnHome: next === "home" })} />
       {toast && (
         <div className="toast-banner" role="status">
           <span>{toast.message}</span>

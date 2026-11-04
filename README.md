@@ -38,11 +38,12 @@ La compilación genera `dist/` y su caché para uso sin conexión. Para comproba
 
 ```sh
 python tests/browser_guided.py
+python tests/browser_controls.py
 ```
 
 ## Android
 
-[Descargar la APK 5.0.2](./releases/Bitacora-Fit-Pro-5.0.2.apk). Consulta las [instrucciones de instalación y respaldo](./releases/README.md), especialmente si ya tienes instalada la entrega anterior.
+[Descargar la APK 5.0.3](./releases/Bitacora-Fit-Pro-5.0.3.apk) o su [alternativa ZIP](./releases/Bitacora-Fit-Pro-5.0.3-instalar.zip). Consulta las [instrucciones de instalación y respaldo](./releases/README.md).
 
 Requiere JDK 21 y Android SDK 36. Con el SDK configurado:
 
@@ -54,6 +55,14 @@ cd android
 ```
 
 En Linux, si el ZIP original perdió el permiso de ejecución: `chmod +x android/gradlew`. El APK de depuración se genera en `android/app/build/outputs/apk/debug/`. Para distribuir una actualización sobre una instalación existente hay que conservar la misma clave de firma. Las instrucciones históricas de la entrega original se conservan en `ANDROID.md` y `ENTREGA.md`.
+
+## Cambios de la versión 5.0.3
+
+- Controles de series, segundos y cardio que se adaptan a pantallas pequeñas y letras grandes sin solaparse ni cortar los botones.
+- Navegación flotante de cristal con el apartado activo expandido, siguiendo las referencias visuales del usuario.
+- Botones con reflejos, relieve y una respuesta de pulsación en 3D; transiciones de sección y respeto de la preferencia de movimiento reducido.
+- La barra inferior utiliza el margen seguro del teléfono sin crear una franja opaca demasiado alta.
+- Pruebas de geometría y legibilidad para los tres modos de registro en ocho anchos y tres tamaños de letra.
 
 ## Cambios de la versión 5.0.2
 

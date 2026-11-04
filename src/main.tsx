@@ -9,6 +9,8 @@ import "@fontsource/jetbrains-mono/latin-700.css";
 import "./styles/app.css";
 import App from "./App";
 import "./styles/fieldbook.css";
+import "./styles/controls.css";
+import "./styles/glass.css";
 
 class ErrorBoundary extends React.Component<
   React.PropsWithChildren,

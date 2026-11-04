@@ -101,7 +101,7 @@ function CountdownDurationEditor({ milliseconds, onApply }: { milliseconds: numb
     if (duration < 1 || duration > 5999) { setError('La duración debe ser de 1 segundo a 99 minutos y 59 segundos.'); return; }
     setError(''); onApply(duration);
   }}>
-    <div className="grid-2">
+    <div className="grid-2 measurement-controls">
       <ValidatedStepper label="Minutos iniciales" value={minutes} min={0} max={99} onValue={setMinutes} />
       <ValidatedStepper label="Segundos iniciales" value={seconds} min={0} max={59} step={5} onValue={setSeconds} />
     </div>
@@ -356,7 +356,7 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
                 <Flame size={14} /> Configuración de intervalos HIIT / Tabata
               </span>
             </div>
-            <div className="grid-3">
+            <div className="grid-3 measurement-controls">
               <ValidatedStepper
                 label="Trabajo (s)"
                 value={chrono.hiitWorkSec}

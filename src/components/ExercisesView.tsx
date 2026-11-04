@@ -1028,7 +1028,7 @@ export const ExercisesView: React.FC<ExercisesViewProps> = ({
 
           {/* Campos Polimórficos */}
           {mode === 'strength' && (
-            <div className="grid-3">
+            <div className="grid-3 measurement-controls">
               <div className="number-stepper">
                 <div className="lbl">
                   <span>Series</span>
@@ -1197,7 +1197,7 @@ export const ExercisesView: React.FC<ExercisesViewProps> = ({
                   </button>
                 ))}
               </div>
-              <div className="grid-3">
+              <div className="grid-3 measurement-controls">
                 <div className="number-stepper">
                   <div className="lbl">
                     <span>Minutos</span>
@@ -1253,7 +1253,7 @@ export const ExercisesView: React.FC<ExercisesViewProps> = ({
                   <div className="lbl">
                     <span>Ritmo</span>
                   </div>
-                  <div className="stepper-row">
+                  <div className="stepper-row stepper-single">
                     <input
                       type="text"
                       className="step-val-input"
@@ -1268,7 +1268,7 @@ export const ExercisesView: React.FC<ExercisesViewProps> = ({
           )}
 
           {mode === 'time' && (
-            <div className="grid-2">
+            <div className="grid-2 measurement-controls">
               <div className="number-stepper">
                 <div className="lbl">
                   <span>Series</span>
@@ -1299,7 +1299,7 @@ export const ExercisesView: React.FC<ExercisesViewProps> = ({
                   <span>Segundos</span>
                 </div>
                 <div className="stepper-row">
-                  <button type="button" className="step-circle" onClick={() => handleStep(setTimeSecs, -15, 5, 86400)}>
+                  <button type="button" className="step-circle" aria-label="Reducir segundos por serie" disabled={timeSecs <= 5} onClick={() => handleStep(setTimeSecs, -15, 5, 86400)}>
                     -
                   </button>
                   <input
@@ -1313,7 +1313,7 @@ export const ExercisesView: React.FC<ExercisesViewProps> = ({
                     min={5}
                     onChange={(e) => setTimeSecs(e.target.value === '' ? Number.NaN : Number(e.target.value))}
                   />
-                  <button type="button" className="step-circle" onClick={() => handleStep(setTimeSecs, 15, 5, 86400)}>
+                  <button type="button" className="step-circle" aria-label="Aumentar segundos por serie" disabled={timeSecs >= 86400} onClick={() => handleStep(setTimeSecs, 15, 5, 86400)}>
                     +
                   </button>
                 </div>
