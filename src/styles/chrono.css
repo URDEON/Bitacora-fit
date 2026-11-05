@@ -1,0 +1,397 @@
+/* Independent clocks: one instrument, three real timing modes. */
+.chrono-view {
+  --chrono-ink: var(--brand-primary);
+  --chrono-wash: var(--brand-primary-soft);
+  min-width: 0;
+}
+
+.chrono-view[data-mode="stopwatch"],
+.chrono-view[data-mode="hiit"][data-phase="rest"] {
+  --chrono-ink: var(--brand-calm);
+  --chrono-wash: var(--brand-calm-soft);
+}
+
+.chrono-view .chrono-main { overflow: visible; padding-top: 4px; border-top: 0; }
+.chrono-view .block-subtitle { max-width: 54ch; }
+
+.chrono-view .mode-switcher {
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  padding: 4px;
+  margin: 18px 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--bg-subtle);
+}
+
+.chrono-view .mode-switcher::before {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  inset: 4px auto 4px 4px;
+  width: calc((100% - 8px) / 3);
+  border: 1px solid var(--glass-edge);
+  border-radius: 14px;
+  background: var(--bg-card);
+  box-shadow: 0 2px 5px var(--glass-shadow), inset 0 1px var(--glass-rim);
+  transform: translateX(calc(var(--chrono-tab-index) * 100%));
+  transition: transform 280ms cubic-bezier(.22, .7, .25, 1);
+  pointer-events: none;
+}
+
+.chrono-view .mode-card,
+.chrono-view .mode-card.active,
+.chrono-view .mode-card.active.cardio-mode,
+.chrono-view .mode-card.active.green-mode {
+  min-width: 0;
+  min-height: 58px;
+  padding: 9px 4px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-secondary);
+  transition: color 240ms ease, transform 180ms ease;
+}
+
+.chrono-view .mode-card.active { color: var(--chrono-ink); }
+.chrono-view .mode-card .m-title { font-size: .8rem; line-height: 1.25; }
+.chrono-view .mode-card .m-sub { font-size: .63rem; line-height: 1.35; color: var(--text-muted); }
+.chrono-view .mode-card:active { transform: scale(.96); }
+
+.chrono-view .chrono-face {
+  overflow: visible;
+  padding: 14px 0 18px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: center;
+}
+
+.chrono-view .chrono-display-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  text-align: start;
+  flex-wrap: wrap;
+}
+
+.chrono-view .chrono-mode-caption {
+  color: var(--text-secondary);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.chrono-view .chrono-status-pill {
+  gap: 6px;
+  max-width: 100%;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: .7rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: normal;
+  text-align: start;
+  transition: color 240ms ease, background-color 240ms ease;
+}
+
+.chrono-view .chrono-status-pill::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.chrono-view[data-running="true"] .chrono-status-pill {
+  background: var(--chrono-wash);
+  color: var(--chrono-ink);
+}
+
+.chrono-view[data-running="true"] .chrono-status-pill::before { background: currentColor; }
+
+.chrono-view .chrono-dial-shell {
+  position: relative;
+  width: min(100%, 330px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  container-type: inline-size;
+  isolation: isolate;
+}
+
+.chrono-view .chrono-dial-glass {
+  position: absolute;
+  z-index: -1;
+  inset: 9%;
+  border: 1px solid var(--glass-edge);
+  border-radius: 50%;
+  background: var(--glass-solid);
+  box-shadow: inset 0 2px 0 var(--glass-rim), inset 0 -7px 16px var(--glass-shadow), 0 14px 28px -16px var(--glass-depth);
+  transition: background-color 280ms ease, box-shadow 280ms ease;
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .chrono-view .chrono-dial-glass {
+    background: var(--glass-face);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.chrono-view .chrono-dial {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+}
+
+.chrono-view .chrono-dial-halo { stroke: var(--border); stroke-width: .65; }
+.chrono-view .chrono-dial-track { stroke: var(--border); stroke-width: 6; }
+.chrono-view .chrono-dial-ticks { stroke: var(--border-strong); stroke-width: .7; }
+.chrono-view .chrono-dial-ticks .major { stroke: var(--text-secondary); stroke-width: 1; }
+.chrono-view .chrono-dial-progress {
+  stroke: var(--chrono-ink);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 120ms linear, stroke 280ms ease, opacity 280ms ease;
+}
+.chrono-view[data-mode="stopwatch"] .chrono-dial-progress { opacity: 0; }
+
+.chrono-view .chrono-orbit-pointer {
+  opacity: 0;
+  transform-origin: 150px 150px;
+  transition: transform 100ms linear, opacity 280ms ease;
+}
+.chrono-view[data-mode="stopwatch"] .chrono-orbit-pointer { opacity: 1; }
+.chrono-view .chrono-orbit-dot { fill: var(--chrono-ink); stroke: var(--bg-card); stroke-width: 1.5; }
+.chrono-view .chrono-orbit-glow { fill: var(--chrono-ink); opacity: .12; }
+
+.chrono-view .chrono-dial-content {
+  position: absolute;
+  inset: 14% 12%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  animation: chrono-mode-arrive 300ms cubic-bezier(.22, .7, .25, 1) both;
+}
+
+.chrono-view .chrono-phase-icon {
+  display: grid;
+  place-items: center;
+  color: var(--chrono-ink);
+  width: 36px;
+  min-height: 30px;
+  margin-bottom: 5px;
+  transition: color 280ms ease;
+}
+.chrono-view .chrono-phase-title {
+  max-width: 100%;
+  color: var(--text-secondary);
+  font-size: .78rem;
+  font-size: clamp(.65rem, 3.6cqi, .78rem);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.chrono-view .chrono-big-digits {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+  margin: 7px 0 6px;
+  width: 100%;
+  font-size: clamp(1.75rem, 12vw, 3.35rem);
+  font-size: clamp(1.75rem, 16cqi, 3.35rem);
+  line-height: 1.05;
+  letter-spacing: -.065em;
+  white-space: nowrap;
+  color: var(--text-main);
+}
+.chrono-view .chrono-tenths {
+  font-size: .44em;
+  letter-spacing: -.025em;
+  color: var(--text-secondary);
+}
+.chrono-view .chrono-dial-shell[data-long-digits="true"] .chrono-big-digits {
+  font-size: clamp(1.3rem, 9vw, 2.65rem);
+  font-size: clamp(1.3rem, 12cqi, 2.65rem);
+}
+.chrono-view .chrono-clock-caption {
+  color: var(--text-muted);
+  font-size: .68rem;
+  font-size: clamp(.55rem, 3.1cqi, .68rem);
+  line-height: 1.4;
+}
+.chrono-view .chrono-round-caption {
+  margin-top: 8px;
+  color: var(--chrono-ink);
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  font-size: clamp(.6rem, 3.4cqi, .75rem);
+  line-height: 1.4;
+}
+
+.chrono-view .chrono-time-context {
+  margin: 12px 0 0;
+  font-size: .76rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.chrono-view .chrono-time-context strong {
+  margin-left: 6px;
+  color: var(--text-main);
+  font-family: var(--font-mono);
+}
+.chrono-view .chrono-live-adjust {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -10px 0 20px;
+}
+.chrono-view .chrono-live-adjust .pill-action {
+  min-height: 44px;
+  flex: 1 1 64px;
+  max-width: 104px;
+  padding: 8px 6px;
+  border-radius: 12px;
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: .76rem;
+}
+
+.chrono-view .chrono-main-controls {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.chrono-view .chrono-main-controls .btn-main {
+  min-width: 0;
+  min-height: 56px;
+  padding: 12px 8px;
+  border-radius: 16px;
+  font-size: .88rem;
+  gap: 7px;
+  overflow-wrap: anywhere;
+}
+.chrono-view .chrono-primary-control {
+  background: var(--chrono-ink);
+  color: var(--text-on-accent);
+  border: 1px solid transparent;
+  box-shadow: inset 0 1px var(--glass-rim), 0 5px 10px var(--glass-shadow);
+}
+.chrono-view .chrono-reset-control {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  box-shadow: inset 0 1px var(--glass-rim);
+}
+.chrono-view .chrono-main-controls svg { flex-shrink: 0; }
+
+.chrono-view .chrono-configuration {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  animation: chrono-config-arrive 240ms ease both;
+}
+.chrono-view .chrono-configuration .lbl { line-height: 1.4; }
+.chrono-view .preset-row { gap: 6px; margin: 8px 0 20px; }
+.chrono-view .preset-row .mini-chip {
+  min-height: 44px;
+  min-width: 56px;
+  flex: 1 1 65px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+}
+.chrono-view .preset-row .mini-chip.active {
+  color: var(--chrono-ink);
+  border-color: var(--chrono-ink);
+  background: var(--chrono-wash);
+}
+.chrono-view .laps-panel { margin-top: 16px; }
+.chrono-view .lap-row { gap: 8px; padding-block: 12px; animation: chrono-config-arrive 240ms ease both; }
+.chrono-view .sound-test-row { flex-wrap: wrap; }
+.chrono-view .sound-test-row .select-clean { flex-basis: 190px; }
+.chrono-view .switch-row > span { min-width: 0; }
+.chrono-view button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+
+.chrono-view .chrono-face.alarm-flash .chrono-dial-glass { background: var(--chrono-wash); }
+.chrono-view .chrono-face.alarm-flash .chrono-dial-halo { stroke: var(--chrono-ink); stroke-width: 2; }
+
+@keyframes chrono-mode-arrive {
+  from { opacity: 0; transform: translateY(7px) scale(.95) rotate(-2deg); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotate(0); filter: blur(0); }
+}
+@keyframes chrono-config-arrive {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .tab-stage > .page-heading.chrono-page-heading {
+    margin: 0 0 10px;
+    padding: 4px 0 0;
+  }
+  .tab-stage > .page-heading.chrono-page-heading h1 {
+    margin: 4px 0;
+    font-size: 1.8rem;
+    line-height: 1.1;
+  }
+  .tab-stage > .page-heading.chrono-page-heading > p { display: none; }
+  .chrono-view .mode-switcher { margin-top: 0; }
+  .chrono-view .chrono-face { padding-top: 8px; padding-bottom: 12px; }
+  .chrono-view .chrono-display-meta { margin-bottom: 4px; }
+  .chrono-view .chrono-dial-shell { max-width: 280px; }
+  .chrono-view .chrono-time-context { margin-top: 4px; }
+}
+
+@media (max-width: 360px) {
+  .chrono-view .mode-card .m-title { font-size: .73rem; }
+  .chrono-view .mode-card .m-sub { font-size: .6rem; }
+  .chrono-view .chrono-main-controls { gap: 8px; grid-template-columns: 1.2fr 1fr; }
+  .chrono-view .chrono-main-controls .btn-main { font-size: .78rem; gap: 5px; }
+  .chrono-view .chrono-reset-control { flex-direction: column; gap: 3px; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .chrono-view .chrono-dial-glass { background: var(--glass-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+[data-transparency="reduced"] .chrono-view .chrono-dial-glass {
+  background: var(--glass-solid); -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chrono-view .mode-switcher::before,
+  .chrono-view .mode-card,
+  .chrono-view .chrono-status-pill,
+  .chrono-view .chrono-dial-glass,
+  .chrono-view .chrono-dial-progress,
+  .chrono-view .chrono-orbit-pointer,
+  .chrono-view .chrono-phase-icon { transition: none; }
+  .chrono-view .chrono-dial-content,
+  .chrono-view .chrono-configuration,
+  .chrono-view .lap-row { animation: none; }
+  .chrono-view .mode-card:active { transform: none; }
+}
+[data-motion="reduced"] .chrono-view .mode-switcher::before,
+[data-motion="reduced"] .chrono-view :is(.mode-card, .chrono-status-pill, .chrono-dial-glass, .chrono-dial-progress, .chrono-orbit-pointer, .chrono-phase-icon) { transition: none; }
+[data-motion="reduced"] .chrono-view :is(.chrono-dial-content, .chrono-configuration, .lap-row) { animation: none; }
+[data-motion="reduced"] .chrono-view .mode-card:active { transform: none; }

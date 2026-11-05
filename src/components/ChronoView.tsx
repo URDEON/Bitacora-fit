@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useState } from 'react';
 import {
   BellRing,
+  Coffee,
   Flag,
   Flame,
   Lock,
@@ -17,6 +18,7 @@ import { ensureNotificationSetup, playAlarmSound } from '../services/audioAndNot
 import { readChrono } from '../services/chronoEngine';
 import { useTicker } from '../hooks/useTicker';
 import { useDialog } from './ConfirmDialog';
+import '../styles/chrono.css';
 
 interface ChronoViewProps {
   chrono: PersistedChronoState;
@@ -62,6 +64,7 @@ const PRESET_REST_SECONDS = [
   { label: '3:00 min', sec: 180 },
   { label: '5:00 min', sec: 300 },
 ];
+const DIAL_TICKS = Array.from({ length: 60 }, (_, index) => index);
 
 function ValidatedStepper({ label, value, min, max, step = 1, onValue }: {
   label: string; value: number; min: number; max: number; step?: number; onValue: (value: number) => void;
@@ -134,34 +137,50 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
   const reading = readChrono(chrono, Date.now());
   const displayMs = reading.displayMs;
   const progressPct = reading.progressPct;
+  const modeIndex = chrono.mode === 'countdown' ? 0 : chrono.mode === 'stopwatch' ? 1 : 2;
+  const modeTitle = chrono.mode === 'countdown' ? 'Descanso' : chrono.mode === 'stopwatch' ? 'Tiempo libre' : 'Intervalos';
+  const phaseTitle = chrono.mode === 'hiit'
+    ? reading.completed ? 'Sesión completada' : reading.phase === 'work' ? 'Trabajo' : 'Recupera'
+    : chrono.mode === 'countdown' ? 'Recupera el ritmo' : 'A tu ritmo';
+  const dialKey = `${chrono.mode}-${chrono.mode === 'hiit' ? reading.phase : 'continuous'}`;
+  const clock = formatMsClock(displayMs);
+  const dialProgress = Math.max(0, Math.min(100, progressPct));
+  // La vuelta del segundero representa un minuto real, no un objetivo inventado.
+  const sweepDegrees = reading.elapsedMs / 60000 * 360;
+  const canResume = reading.elapsedMs > 0 && !reading.completed;
+  const PhaseIcon = chrono.mode === 'countdown' || (chrono.mode === 'hiit' && reading.phase === 'rest')
+    ? Coffee : chrono.mode === 'hiit' ? Flame : Timer;
 
   return (
-    <div className="fade-view">
-      <section className="card-soft" aria-labelledby="chrono-main-title">
-        <div className="block-head">
+    <div className="fade-view chrono-view" data-mode={chrono.mode} data-phase={reading.phase} data-running={chrono.running}>
+      <section className="card-soft chrono-main" aria-labelledby="chrono-main-title">
+        <div className="block-head sr-only">
           <div>
             <h2 id="chrono-main-title" className="block-title">
-              <Timer size={18} /> Centro de tiempos y descanso
+              <Timer size={18} /> Tu tiempo, tu ritmo
             </h2>
             <p className="block-subtitle">
-              Relojes independientes para descanso, cardio e intervalos. Para seguir preparación, series y descansos, inicia un entrenamiento guiado desde Entrenar.
+              Descansos, cardio e intervalos. Para seguir tus series, inicia un entrenamiento guiado desde Entrenar.
             </p>
           </div>
         </div>
 
         {/* Selector de 3 modos: Descanso, Cronómetro Libre e Intervalos HIIT */}
-        <div className="mode-switcher">
+        <div className="mode-switcher" role="group" aria-label="Modo del cronómetro"
+          style={{ '--chrono-tab-index': modeIndex } as React.CSSProperties}>
           <button
             type="button"
             className={`mode-card ${chrono.mode === 'countdown' ? 'active' : ''}`}
+            aria-pressed={chrono.mode === 'countdown'}
             onClick={() => onSwitchMode('countdown')}
           >
             <span className="m-title">Descanso</span>
-            <span className="m-sub">Autorreset</span>
+            <span className="m-sub">Cuenta atrás</span>
           </button>
           <button
             type="button"
             className={`mode-card cardio-mode ${chrono.mode === 'stopwatch' ? 'active' : ''}`}
+            aria-pressed={chrono.mode === 'stopwatch'}
             onClick={() => onSwitchMode('stopwatch')}
           >
             <span className="m-title">Libre</span>
@@ -170,6 +189,7 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
           <button
             type="button"
             className={`mode-card green-mode ${chrono.mode === 'hiit' ? 'active' : ''}`}
+            aria-pressed={chrono.mode === 'hiit'}
             onClick={() => onSwitchMode('hiit')}
           >
             <span className="m-title">HIIT / Tabata</span>
@@ -177,115 +197,95 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
           </button>
         </div>
 
-        {/* Esfera Digital de Alta Precisión */}
+        {/* La esfera solo presenta la lectura real del motor existente. */}
         <div className={`chrono-face ${alarmFlash ? 'alarm-flash' : ''}`}>
-          <span
-            className="chrono-status-pill"
-            role="status"
-            style={
-              chrono.mode === 'hiit' && chrono.running
-                ? {
-                    background:
-                      chrono.hiitPhase === 'work' ? 'var(--accent)' : 'var(--accent-green)',
-                    color: '#FFFFFF',
-                  }
-                : undefined
-            }
-          >
-            {statusMessage}
-          </span>
-
-          <div className="chrono-big-digits" role="timer" aria-label="Tiempo del cronómetro">
-            {formatMsClock(displayMs)}
+          <div className="chrono-display-meta">
+            <span className="chrono-mode-caption">{modeTitle}</span>
+            <span className="chrono-status-pill" role="status">{statusMessage}</span>
           </div>
 
-          <div className="ticket-meta">
+          <div className="chrono-dial-shell" data-long-digits={clock.split(':')[0].length > 2}>
+            <div className="chrono-dial-glass" aria-hidden="true" />
+            <svg className="chrono-dial" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
+              <circle className="chrono-dial-halo" cx="150" cy="150" r="145" />
+              <g className="chrono-dial-ticks">
+                {DIAL_TICKS.map(index => (
+                  <line key={index} x1="150" x2="150" y1={index % 5 === 0 ? 21 : 24} y2="28"
+                    transform={`rotate(${index * 6} 150 150)`} className={index % 5 === 0 ? 'major' : undefined} />
+                ))}
+              </g>
+              <circle className="chrono-dial-track" cx="150" cy="150" r="134" />
+              <circle className="chrono-dial-progress" cx="150" cy="150" r="134" pathLength="100"
+                strokeDasharray="100" strokeDashoffset={100 - dialProgress} transform="rotate(-90 150 150)" />
+              <g className="chrono-orbit-pointer" style={{ transform: `rotate(${sweepDegrees}deg)` }}>
+                <circle className="chrono-orbit-glow" cx="150" cy="16" r="9" />
+                <circle className="chrono-orbit-dot" cx="150" cy="16" r="4.5" />
+              </g>
+            </svg>
+            <div className="chrono-dial-content" key={dialKey}>
+              <span className="chrono-phase-icon" aria-hidden="true"><PhaseIcon size={24} strokeWidth={1.65} /></span>
+              <span className="chrono-phase-title">{phaseTitle}</span>
+              <div className="chrono-big-digits" role="timer" aria-label="Tiempo del cronómetro" aria-live="off">
+                <span>{clock.slice(0, -2)}</span><span className="chrono-tenths">{clock.slice(-2)}</span>
+              </div>
+              <span className="chrono-clock-caption">minutos · segundos</span>
+              {chrono.mode === 'hiit' && <span className="chrono-round-caption">Ronda {reading.round} / {chrono.hiitTotalRounds}</span>}
+            </div>
+          </div>
+
+          {chrono.mode !== 'stopwatch' && (
+            <div className="sr-only" role="progressbar"
+              aria-label={chrono.mode === 'hiit' ? `Tiempo restante de ${reading.phase === 'work' ? 'trabajo' : 'descanso'}` : 'Tiempo restante'}
+              aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(dialProgress)}
+              aria-valuetext={`${formatMinSecShort(displayMs)} restantes`} />
+          )}
+
+          <div className="ticket-meta chrono-time-context">
             {chrono.mode === 'countdown' ? (
               <>
-                Tiempo inicial fijado: <strong>{formatMinSecShort(chrono.initialSelectedMs)} min</strong>
+                Duración inicial <strong>{formatMinSecShort(chrono.initialSelectedMs)}</strong>
               </>
             ) : chrono.mode === 'hiit' ? (
               <>
-                Ronda <strong>{chrono.hiitCurrentRound}</strong> de{' '}
-                <strong>{chrono.hiitTotalRounds}</strong> ·{' '}
-                <strong>{chrono.hiitPhase === 'work' ? 'Fase de trabajo' : 'Fase de descanso'}</strong>
+                <span>{chrono.hiitWorkSec} s trabajo</span><span aria-hidden="true"> / </span><span>{chrono.hiitRestSec} s descanso</span>
               </>
             ) : (
-              <>Modo continuo para medir bicicleta, caminata o circuito</>
+              <>Sin límite. Marca una vuelta cuando quieras.</>
             )}
           </div>
 
-          {chrono.mode === 'countdown' && (
-            <div className="chrono-live-adjust">
-              <button
-                type="button"
-                className="pill-action"
-                onClick={() => onAdjustLiveSeconds(-15)}
-              >
-                -15 seg
-              </button>
-              <button
-                type="button"
-                className="pill-action"
-                onClick={() => onAdjustLiveSeconds(15)}
-              >
-                +15 seg
-              </button>
-              <button
-                type="button"
-                className="pill-action"
-                onClick={() => onAdjustLiveSeconds(30)}
-              >
-                +30 seg
-              </button>
-            </div>
-          )}
-
-          <div
-            className="progress-track"
-            role="progressbar"
-            aria-label="Tiempo restante"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(progressPct)}
-          >
-            <div
-              className="progress-fill"
-              style={{
-                width: `${progressPct}%`,
-                background:
-                  chrono.mode === 'stopwatch'
-                    ? 'var(--accent-blue)'
-                    : chrono.mode === 'hiit' && chrono.hiitPhase === 'rest'
-                      ? 'var(--accent-green)'
-                      : 'var(--accent)',
-              }}
-            />
-          </div>
         </div>
 
         {/* Botones Principales */}
-        <div className="grid-2">
-          <button type="button" className="btn-main" onClick={onToggleStartPause}>
+        <div className="chrono-main-controls">
+          <button type="button" className="btn-main chrono-primary-control" onClick={onToggleStartPause}>
             {chrono.running ? (
               <>
-                <Pause size={17} /> Pausar
+                <Pause size={20} fill="currentColor" /> Pausar
               </>
             ) : (
               <>
-                <Play size={17} /> Iniciar
+                <Play size={20} fill="currentColor" /> {canResume ? 'Reanudar' : 'Iniciar'}
               </>
             )}
           </button>
 
-          <button type="button" className="btn-main subtle" onClick={onReset}>
-            <RotateCcw size={16} /> Restablecer
+          <button type="button" className="btn-main subtle chrono-reset-control" onClick={onReset}>
+            <RotateCcw size={19} /> Restablecer
           </button>
         </div>
 
+        {chrono.mode === 'countdown' && (
+          <div className="chrono-live-adjust" role="group" aria-label="Ajustar el tiempo de descanso">
+            <button type="button" className="pill-action" onClick={() => onAdjustLiveSeconds(-15)}>-15 seg</button>
+            <button type="button" className="pill-action" onClick={() => onAdjustLiveSeconds(15)}>+15 seg</button>
+            <button type="button" className="pill-action" onClick={() => onAdjustLiveSeconds(30)}>+30 seg</button>
+          </div>
+        )}
+
         {/* Controles Exclusivos según Modo */}
         {chrono.mode === 'countdown' && (
-          <div>
+          <div className="chrono-configuration" key="countdown-config">
             <div className="lbl">
               <span>1. Tiempos rápidos de descanso</span>
             </div>
@@ -295,6 +295,7 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
                   key={p.sec}
                   type="button"
                   className={`mini-chip ${initTotalSecs === p.sec ? 'active' : ''}`}
+                  aria-pressed={initTotalSecs === p.sec}
                   onClick={() => onSelectInitialSeconds(p.sec)}
                 >
                   {p.label}
@@ -313,7 +314,7 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
         )}
 
         {chrono.mode === 'stopwatch' && (
-          <div>
+          <div className="chrono-configuration" key="stopwatch-config">
             <div className="grid-2">
               <button
                 type="button"
@@ -350,7 +351,7 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
         )}
 
         {chrono.mode === 'hiit' && (
-          <div>
+          <div className="chrono-configuration" key="hiit-config">
             <div className="lbl">
               <span>
                 <Flame size={14} /> Configuración de intervalos HIIT / Tabata
@@ -407,7 +408,7 @@ export const ChronoView: React.FC<ChronoViewProps> = ({
         <div className="section-stack" style={{ gap: 'var(--space-3)' }}>
           <label className="switch-row">
             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Sun size={16} style={{ color: 'var(--accent-amber)', flexShrink: 0 }} />
+              <Sun size={16} style={{ color: 'var(--brand-calm)', flexShrink: 0 }} />
               Mantener pantalla encendida mientras entreno
             </span>
             <input

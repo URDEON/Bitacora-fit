@@ -2,6 +2,7 @@ import { useId, useRef, useState, type PointerEvent } from 'react';
 import { ArrowLeft, ArrowRight, Dumbbell, Droplets, Flame, Utensils } from 'lucide-react';
 import type { ActiveTab } from '../types';
 import { metricProgress, type HomeMetric } from '../services/homeMetrics';
+import { MetricVisual } from './MetricVisual';
 
 interface Props { metrics: HomeMetric[]; onNavigate: (tab: ActiveTab) => void; }
 interface Gesture { id: number; x: number; y: number; axis: 'x' | 'y' | null; }
@@ -91,6 +92,7 @@ export function MetricCarousel({ metrics, onNavigate }: Props) {
           }
         }}
       >
+        <MetricVisual metric={metric} />
         <svg className="metric-ring" viewBox="0 0 320 320" role="progressbar" aria-label={`Progreso de ${metric.name}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={ringPercent} aria-valuetext={percentage}>
           <circle className="metric-ring-track" cx="160" cy="160" r="148" />
           <circle className="metric-ring-value" cx="160" cy="160" r="148" pathLength={100} strokeDasharray={100} strokeDashoffset={100 - ringPercent} />

@@ -12,6 +12,9 @@ import "./styles/fieldbook.css";
 import "./styles/controls.css";
 import "./styles/glass.css";
 import "./styles/home.css";
+import "./styles/metric-identity.css";
+import "./styles/guided-clock.css";
+import "./styles/motion.css";
 
 class ErrorBoundary extends React.Component<
   React.PropsWithChildren,

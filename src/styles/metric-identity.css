@@ -1,0 +1,91 @@
+/* These illustrations describe a measurement; the centre remains a quiet reading surface. */
+.metric-identity-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* The accessible progressbar remains in the DOM; each illustration draws its own progress. */
+.metric-orbit .metric-ring-value { stroke: transparent; }
+.metric-orbit[data-metric="training"] .metric-ring-track,
+.metric-orbit[data-metric="energy"] .metric-ring-track,
+.metric-orbit[data-metric="protein"] .metric-ring-track { stroke: transparent; }
+.metric-orbit[data-metric="water"] .metric-ring-track { stroke-width: 1; opacity: .35; }
+
+.metric-orbit[data-metric="water"] .metric-symbol { color: var(--metric-water-edge); }
+.metric-orbit[data-metric="energy"] .metric-symbol,
+.metric-orbit[data-metric="training"] .metric-symbol { color: var(--brand-primary); }
+.metric-orbit[data-metric="protein"] .metric-symbol { color: var(--metric-protein-fill); }
+
+/* A week's sessions are discrete, unlike continuous water or nutrient totals. */
+.training-segment {
+  fill: none;
+  stroke: var(--metric-empty);
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke 240ms ease;
+}
+.training-segment[data-complete="true"] { stroke: var(--brand-primary); }
+.training-segment[data-complete="true"] { animation: metric-part-arrive 280ms ease-out; }
+.training-marker { fill: var(--text-secondary); }
+
+/* The level is positioned by circular-segment area, not by a decorative CSS percentage. */
+.water-level { transition: transform 300ms ease-out; }
+.water-body { fill: var(--metric-water-fill); }
+.water-meniscus {
+  fill: none;
+  stroke: var(--metric-water-edge);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: .35;
+}
+.water-bubbles { fill: none; stroke: var(--metric-water-edge); stroke-width: 1.3; opacity: .22; }
+
+/* Peripheral charge cells leave the energy reading unobstructed. */
+.energy-cell {
+  fill: var(--metric-energy-soft);
+  stroke: var(--metric-empty);
+  stroke-width: 1;
+  transition: fill 240ms ease, stroke 240ms ease;
+}
+.energy-cell[data-filled="true"] {
+  fill: var(--brand-primary);
+  stroke: var(--brand-primary);
+  animation: metric-part-arrive 280ms ease-out;
+}
+.energy-core-ray {
+  fill: none;
+  stroke: var(--brand-primary);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: .25;
+}
+
+/* Bonded nodes give protein a structural identity rather than a second progress ring. */
+.protein-bond {
+  fill: none;
+  stroke: var(--metric-empty);
+  stroke-width: 1.5;
+  transition: stroke 240ms ease;
+}
+.protein-bond[data-filled="true"] { stroke: var(--metric-protein-fill); }
+.protein-node {
+  fill: var(--metric-protein-core);
+  stroke: var(--metric-empty);
+  stroke-width: 1.5;
+  transition: stroke 240ms ease;
+}
+.protein-node[data-filled="true"] { stroke: var(--metric-protein-fill); }
+.protein-node-core { fill: var(--metric-protein-fill); animation: metric-part-arrive 280ms ease-out; }
+.metric-fill-window { transition: y 280ms ease-out, height 280ms ease-out; }
+@keyframes metric-part-arrive { from { opacity: .2; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-identity-visual * { animation: none !important; transition: none !important; }
+}
+[data-motion="reduced"] .metric-identity-visual * { animation: none !important; transition: none !important; }

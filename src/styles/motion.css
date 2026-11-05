@@ -1,0 +1,34 @@
+/* A single interaction rhythm. Clock ticks stay readable; only state changes enter. */
+:where(button, input, select, textarea, a) { transition: color var(--dur-fast) ease, background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease; }
+:where(input, select, textarea):focus-visible { box-shadow: 0 0 0 3px var(--accent-soft); }
+.mode-card.active .m-title { animation: mode-label-focus 240ms ease-out; }
+.ticket-row { animation: record-enter 240ms ease-out; }
+.preset-row .mini-chip.active { animation: choice-settle 180ms ease-out; }
+input[type="checkbox"]:checked { animation: choice-settle 180ms ease-out; }
+details[open] > :not(summary) { animation: disclosure-enter 220ms ease-out; }
+.dialog-icon svg { animation: choice-settle 240ms ease-out; }
+.ex-card-thumb,
+.photo-frame img { transition: transform 280ms ease-out; }
+@media (hover: hover) and (pointer: fine) {
+  .ex-visual-card:hover .ex-card-thumb,
+  .photo-frame:hover img { transform: scale(1.035); }
+  .home-quick-actions button:hover svg { transform: translateY(-2px); }
+}
+.home-quick-actions button svg { transition: transform 200ms ease-out; }
+.metric-arrow:active,
+.metric-pagination button:active,
+.date-btn:active { transform: scale(.94); }
+.metric-arrow,
+.metric-pagination button,
+.date-btn { transition: transform 160ms ease, background-color 180ms ease; }
+@keyframes mode-label-focus { from { opacity: .6; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+@keyframes record-enter { from { opacity: .4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes disclosure-enter { from { opacity: .4; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@keyframes choice-settle { from { transform: scale(.94); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  :where(button, input, select, textarea, a), .mode-card.active .m-title, .ticket-row, .preset-row .mini-chip.active, input[type="checkbox"]:checked, details[open] > :not(summary), .dialog-icon svg, .ex-card-thumb, .photo-frame img, .home-quick-actions button svg { animation: none !important; transition: none !important; }
+  .ex-visual-card:hover .ex-card-thumb, .photo-frame:hover img, .home-quick-actions button:hover svg, .metric-arrow:active, .metric-pagination button:active, .date-btn:active { transform: none !important; }
+}
+[data-motion="reduced"] :is(button, input, select, textarea, a, .m-title, .ticket-row, .dialog-icon svg, .ex-card-thumb, .photo-frame img, .home-quick-actions button svg),
+[data-motion="reduced"] details[open] > :not(summary) { animation: none !important; transition: none !important; }
+[data-motion="reduced"] :is(.ex-visual-card:hover .ex-card-thumb, .photo-frame:hover img, .home-quick-actions button:hover svg, .metric-arrow:active, .metric-pagination button:active, .date-btn:active) { transform: none !important; }

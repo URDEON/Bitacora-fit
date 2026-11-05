@@ -1,7 +1,7 @@
 {
   "name": "bitacora-fit-pro",
   "private": true,
-  "version": "5.0.4",
+  "version": "5.0.5",
   "description": "Bitácora Fit Pro — entrenamiento, alimentación y progreso sin conexión",
   "type": "module",
   "scripts": {

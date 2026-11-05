@@ -953,7 +953,7 @@ export default function App() {
           />
         </div>
         <div className="tab-stage" hidden={tab !== "chrono"}>
-          <div className="page-heading compact">
+          <div className="page-heading compact chrono-page-heading">
             <p className="eyebrow">PRECISIÓN Y RITMO</p>
             <h1>Tu tiempo</h1>
             <p className="text-thin">Descanso, cronómetro e intervalos</p>

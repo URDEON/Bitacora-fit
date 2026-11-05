@@ -48,6 +48,14 @@
   --glass-nav-active-edge: rgba(173, 78, 56, .28);
   --glass-blur: 14px;
 
+  /* Measurement illustrations share the brand without sharing a silhouette. */
+  --metric-empty: #C6CCC8;
+  --metric-water-fill: #C6DCE2;
+  --metric-water-edge: #547985;
+  --metric-energy-soft: #EAD0C4;
+  --metric-protein-fill: #647D86;
+  --metric-protein-core: #E5ECEC;
+
   --hero-bg: #24292B;
   --hero-border: #41494C;
   --hero-text: #F5F2EB;
@@ -131,6 +139,12 @@ body.dark-mode,
   --glass-nav-active: #48332B;
   --glass-nav-active-text: #F0B5A1;
   --glass-nav-active-edge: rgba(231, 163, 140, .34);
+  --metric-empty: #465156;
+  --metric-water-fill: #234552;
+  --metric-water-edge: #8BB5C2;
+  --metric-energy-soft: #45342D;
+  --metric-protein-fill: #9AB5BF;
+  --metric-protein-core: #2A3940;
   --hero-bg: #22282C;
   --hero-border: #465054;
   --hero-text: #F3F0E9;
@@ -186,6 +200,12 @@ body.dark-mode,
     --glass-nav-active: #48332B;
     --glass-nav-active-text: #F0B5A1;
     --glass-nav-active-edge: rgba(231, 163, 140, .34);
+    --metric-empty: #465156;
+    --metric-water-fill: #234552;
+    --metric-water-edge: #8BB5C2;
+    --metric-energy-soft: #45342D;
+    --metric-protein-fill: #9AB5BF;
+    --metric-protein-core: #2A3940;
     --hero-bg: #22282C;
     --hero-border: #465054;
     --hero-text: #F3F0E9;
