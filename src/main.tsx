@@ -15,6 +15,12 @@ import "./styles/home.css";
 import "./styles/metric-identity.css";
 import "./styles/guided-clock.css";
 import "./styles/motion.css";
+import "./styles/metric-history.css";
+import "./styles/quick-register.css";
+import "./styles/personal.css";
+import "./styles/notes-tools.css";
+import "./styles/graphite.css";
+import "./styles/appearance.css";
 
 class ErrorBoundary extends React.Component<
   React.PropsWithChildren,

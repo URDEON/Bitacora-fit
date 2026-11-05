@@ -42,6 +42,13 @@ import { GuidedWorkoutCoach, type GuidedWorkoutHandle } from "./components/Guide
 import { GlassNavigation } from "./components/GlassNavigation";
 import { BrandMark } from "./components/BrandMark";
 import { BrandIntro } from "./components/BrandIntro";
+import { AppearancePanel } from "./components/AppearancePanel";
+import { QuickRegister } from "./components/QuickRegister";
+import { useAppearance } from "./hooks/useAppearance";
+import { usePersonalData } from "./hooks/usePersonalData";
+import { FinanceView } from "./components/FinanceView";
+import { NotesView } from "./components/NotesView";
+import { ToolsView } from "./components/ToolsView";
 import { BackupExportView as BackupExportViewBase } from "./components/BackupExportView";
 import { ExerciseVisualModal } from "./components/ExerciseVisualModal";
 import { ConfirmDialog, DialogContext, useDialogController } from "./components/ConfirmDialog";
@@ -57,7 +64,7 @@ import {
 // se actualizan cuando cambian sus datos o la selección del usuario.
 const HomeView = memo(
   HomeViewBase,
-  (a, b) => a.db === b.db && a.currentDate === b.currentDate,
+  (a, b) => a.db === b.db && a.currentDate === b.currentDate && a.personalData === b.personalData,
 );
 const ExercisesView = memo(
   ExercisesViewBase,
@@ -73,7 +80,7 @@ const MealsWaterView = memo(
 );
 const ProgressHistoryView = memo(
   ProgressHistoryViewBase,
-  (a, b) => a.db === b.db && a.currentDate === b.currentDate,
+  (a, b) => a.db === b.db && a.currentDate === b.currentDate && a.openWeightRequest === b.openWeightRequest,
 );
 const BackupExportView = memo(
   BackupExportViewBase,
@@ -94,6 +101,14 @@ export default function App() {
   const [presentingBrand, setPresentingBrand] = useState(true);
   const dbRef = useRef<BitacoraDB | null>(null);
   const [tab, setTab] = useState<ActiveTab>("home");
+  const appearanceSettings = useAppearance(db?.darkMode ?? true, tab);
+  const personal = usePersonalData();
+  const [quickRegisterOpen, setQuickRegisterOpen] = useState(false);
+  const quickRegisterOpenRef = useRef(false);
+  quickRegisterOpenRef.current = quickRegisterOpen;
+  const [weightRequest, setWeightRequest] = useState(0);
+  const [financeRequest, setFinanceRequest] = useState<{ id: number; type: 'income' | 'expense' }>();
+  const [noteRequest, setNoteRequest] = useState<{ id: number; type: 'note' | 'task' }>();
   const [currentDate, setCurrentDate] = useState(localDate());
   const [saveStatus, setSaveStatus] = useState("Cargando datos…");
   const [storageError, setStorageError] = useState("");
@@ -272,6 +287,15 @@ export default function App() {
   const registerExportBack = useCallback((c: ViewBackController | null) => {
     viewControllersRef.current.export = c;
   }, []);
+  const registerFinanceBack = useCallback((c: ViewBackController | null) => {
+    viewControllersRef.current.finance = c;
+  }, []);
+  const registerNotesBack = useCallback((c: ViewBackController | null) => {
+    viewControllersRef.current.notes = c;
+  }, []);
+  const registerToolsBack = useCallback((c: ViewBackController | null) => {
+    viewControllersRef.current.tools = c;
+  }, []);
 
   const goTo = useCallback(
     (next: ActiveTab, options?: { resetOnHome?: boolean }) => {
@@ -349,7 +373,7 @@ export default function App() {
     const currentTab = tabRef.current;
     const activeController = viewControllersRef.current[currentTab] ?? null;
     const action = resolveBackNavigation({
-      hasOpenDialog: dialogOpenRef.current,
+      hasOpenDialog: dialogOpenRef.current || quickRegisterOpenRef.current,
       hasVisualModal: visualRef.current !== null,
       hasActiveEditor: Boolean(activeController?.hasActiveEditor()),
       hasActiveSubview: Boolean(activeController?.hasActiveSubview()),
@@ -358,7 +382,8 @@ export default function App() {
     });
     switch (action.type) {
       case "dismiss-dialog":
-        dismissCurrentDialog();
+        if (dialogOpenRef.current) dismissCurrentDialog();
+        else setQuickRegisterOpen(false);
         break;
       case "close-visual-modal":
         setVisual(null);
@@ -629,6 +654,9 @@ export default function App() {
           {db.chrono.running && tab !== "chrono" && (
             <RunningChronoBanner chrono={db.chrono} onOpen={openChrono} />
           )}
+          {['exercises', 'meals', 'progress'].includes(tab) && <nav className="fit-shortcuts" aria-label="Secciones de Fit">
+            {([{ id: 'exercises', label: 'Ejercicios' }, { id: 'meals', label: 'Alimentación' }, { id: 'progress', label: 'Progreso' }, { id: 'chrono', label: 'Cronómetro' }] as const).map(item => <button key={item.id} type="button" aria-current={tab === item.id ? 'page' : undefined} onClick={() => goTo(item.id)}>{item.label}</button>)}
+          </nav>}
           <GuidedWorkoutCoach
             ref={guidedWorkoutRef}
             alarmType={db.alarmType}
@@ -639,6 +667,7 @@ export default function App() {
             <HomeView
               db={db}
               currentDate={currentDate}
+              personalData={personal.data}
               onNavigate={goTo}
               onWater={addWater}
               onRest={() => {
@@ -932,6 +961,7 @@ export default function App() {
           <ProgressHistoryView
             db={db}
             currentDate={currentDate}
+            openWeightRequest={weightRequest}
             onSelectDate={selectDateOnly}
             onOpenDateInTab={openDateInTab}
             onSaveBodyMetric={(entry, id) =>
@@ -980,10 +1010,10 @@ export default function App() {
               Apariencia, objetivos, documentos y copias de seguridad
             </p>
           </div>
+          <AppearancePanel {...appearanceSettings} darkMode={db.darkMode} onToggleDarkMode={toggleDarkMode} />
           <BackupExportView
             db={db}
             currentDate={currentDate}
-            onToggleDarkMode={toggleDarkMode}
             onRestoreBackup={(incoming, mode) =>
               commit(
                 (prev) =>
@@ -999,8 +1029,30 @@ export default function App() {
             registerBackController={registerExportBack}
           />
         </div>
+        <div className="tab-stage" hidden={tab !== "finance"}>
+          <FinanceView model={personal} currentDate={currentDate} actionRequest={financeRequest} registerBackController={registerFinanceBack} />
+        </div>
+        <div className="tab-stage" hidden={tab !== "notes"}>
+          <div className="page-heading compact"><p className="eyebrow">IDEAS Y PENDIENTES</p><h1>Notas</h1><p className="text-thin">Un espacio para escribir y organizarte.</p></div>
+          <NotesView model={personal} currentDate={currentDate} actionRequest={noteRequest} registerBackController={registerNotesBack} />
+        </div>
+        <div className="tab-stage" hidden={tab !== "tools"}>
+          <div className="page-heading compact"><p className="eyebrow">LO QUE NECESITAS</p><h1>Herramientas</h1><p className="text-thin">Calculadoras, apariencia y tus datos.</p></div>
+          <ToolsView model={personal} registerBackController={registerToolsBack} onNavigate={id => {
+            if (id === 'measurements' || id === 'progress') { setWeightRequest(value => value + 1); goTo('progress'); }
+            else if (id === 'appearance' || id === 'export') goTo('export');
+            else if (id === 'chrono' || id === 'finance' || id === 'notes' || id === 'meals' || id === 'exercises') goTo(id);
+          }} />
+        </div>
       </main>
       <GlassNavigation active={tab} onNavigate={(next) => goTo(next, { resetOnHome: next === "home" })} />
+      <QuickRegister open={quickRegisterOpen} onOpen={() => setQuickRegisterOpen(true)} onClose={() => setQuickRegisterOpen(false)} onNavigate={goTo} onWater={addWater}
+        onRest={() => { chrono.startRest(90); goTo('chrono'); }}
+        onWeight={() => { setWeightRequest(value => value + 1); goTo('progress'); }}
+        onIncome={() => { setFinanceRequest({ id: newId(), type: 'income' }); goTo('finance'); }}
+        onExpense={() => { setFinanceRequest({ id: newId(), type: 'expense' }); goTo('finance'); }}
+        onNote={() => { setNoteRequest({ id: newId(), type: 'note' }); goTo('notes'); }}
+        onTask={() => { setNoteRequest({ id: newId(), type: 'task' }); goTo('notes'); }} />
       {toast && (
         <div className="toast-banner" role="status">
           <span>{toast.message}</span>

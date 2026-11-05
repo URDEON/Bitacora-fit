@@ -1,0 +1,69 @@
+.personal-notes, .personal-tools { --personal-accent: var(--custom-notes, var(--brand-primary)); }
+.personal-tools { --personal-accent: var(--custom-tools, var(--brand-primary)); }
+.notes-toolbar { display: grid; gap: 16px; margin-bottom: 22px; }
+.notes-create-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.notes-create-actions .pill-action { flex: 1 1 130px; justify-content: center; }
+.personal-feedback { color: var(--text-secondary); font-size: .85rem; margin-bottom: 16px; }
+.notes-filter, .tools-calculator-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 20px 0 16px; }
+.notes-filter .pill-action, .tools-calculator-tabs .pill-action { flex: 1 1 80px; justify-content: center; padding: 9px 8px; font-size: .8rem; }
+.notes-filter .pill-action.active, .tools-calculator-tabs .pill-action.active { border-color: var(--personal-accent); color: var(--text-main); background: var(--bg-subtle); box-shadow: inset 0 1px 0 var(--glass-rim); }
+.notes-search { display: flex; align-items: center; gap: 10px; padding: 0 14px; min-height: 48px; border: 1px solid var(--glass-edge); border-radius: 999px; background: var(--bg-subtle); color: var(--text-secondary); }
+.notes-search input { min-width: 0; flex: 1; width: 100%; border: 0; background: transparent; color: var(--text-main); padding: 12px 0; }
+.notes-search:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+.notes-search input:focus-visible { outline: 0; box-shadow: none; }
+.notes-result-count { margin: 16px 0 0; color: var(--text-muted); font-size: .76rem; }
+.note-record { position: relative; padding: 20px 0 12px; border-bottom: 1px solid var(--border); }
+.note-record-heading { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.note-kind { color: var(--personal-accent); display: grid; place-items: center; }
+.note-record-heading h2 { min-width: 0; font-size: 1.02rem; line-height: 1.4; }
+.note-record-heading h2 button { display: block; width: 100%; border: 0; background: transparent; color: var(--text-main); text-align: left; padding: 4px 0; font: inherit; font-weight: 650; overflow-wrap: anywhere; }
+.note-record-heading time { color: var(--text-muted); font-size: .7rem; white-space: nowrap; }
+.note-preview { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-secondary); font-size: .86rem; margin: 8px 0 0 32px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.note-record-actions { display: flex; justify-content: flex-end; gap: 4px; margin-top: 8px; }
+.note-record-actions .icon-btn { min-width: 44px; min-height: 44px; background: transparent; border: 0; color: var(--text-secondary); }
+.note-record-actions .icon-btn[aria-pressed="true"] { color: var(--personal-accent); }
+.note-checklist { display: grid; gap: 0; margin: 10px 0 0 32px; }
+.note-checklist label { display: flex; gap: 10px; align-items: center; min-height: 44px; padding: 8px 0; color: var(--text-main); font-size: .87rem; overflow-wrap: anywhere; }
+.note-checklist input, .note-task-edit-row input[type="checkbox"], .note-favorite-control input { width: 20px; height: 20px; flex: 0 0 20px; accent-color: var(--personal-accent); }
+.note-checklist .done span { text-decoration: line-through; color: var(--text-muted); }
+.note-task-count { color: var(--text-muted); font-size: .75rem; margin-top: 6px; }
+.notes-empty { padding: 40px 4px; color: var(--text-secondary); }
+.notes-empty > svg { color: var(--personal-accent); margin-bottom: 12px; }
+.notes-empty h2 { font-size: 1.2rem; color: var(--text-main); margin-bottom: 8px; }
+.notes-empty p { font-size: .88rem; max-width: 34ch; }
+.note-editor { padding: 20px; border-radius: 24px; margin: 18px 0 26px; animation: personal-editor-enter 240ms var(--ease-out); }
+.note-editor-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 18px; }
+.note-editor-heading h2 { font-size: 1.25rem; }
+.note-editor .lbl { display: block; margin: 16px 0 8px; }
+.note-editor .input-clean { width: 100%; min-width: 0; }
+.note-body-input { resize: vertical; min-height: 150px; max-height: 65vh; line-height: 1.65; }
+.note-editor-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.note-editor-actions > button { flex: 1 1 110px; justify-content: center; }
+.note-task-editor { border: 0; padding: 0; margin-top: 20px; min-width: 0; }
+.note-task-editor legend { padding: 0 0 10px; color: var(--text-secondary); font-size: .86rem; }
+.note-task-edit-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 6px; margin-bottom: 8px; }
+.note-task-toggle { display: grid; place-items: center; width: 44px; min-height: 44px; }
+.note-task-edit-row .icon-btn { min-width: 44px; min-height: 44px; border: 0; color: var(--text-secondary); background: transparent; }
+.note-task-editor > .text-button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+.note-favorite-control { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 16px; color: var(--text-secondary); font-size: .87rem; }
+.tools-link-list { display: grid; margin: 18px 0 32px; }
+.tools-link-list > button { display: flex; gap: 14px; min-height: 76px; align-items: center; background: transparent; border: 0; border-bottom: 1px solid var(--border); padding: 14px 0; text-align: left; color: var(--text-main); }
+.tools-link-list > button > svg:first-child { color: var(--personal-accent); flex: 0 0 21px; }
+.tools-link-list > button > svg:last-child { margin-left: auto; color: var(--text-secondary); flex: 0 0 18px; }
+.tools-link-list > button span { display: grid; gap: 3px; min-width: 0; }
+.tools-link-list strong { font-size: .96rem; font-weight: 600; }
+.tools-link-list small { color: var(--text-secondary); font-size: .77rem; }
+.tools-calculator { border-top: 1px solid var(--border); padding-top: 24px; }
+.tools-calculator-heading { display: flex; align-items: center; gap: 10px; }
+.tools-calculator-heading > svg { color: var(--personal-accent); }
+.tools-calculator-heading h2 { font-size: 1.2rem; }
+.tools-calculator-form { display: grid; gap: 16px; }
+.tools-calculator-form .lbl { display: block; margin-bottom: 7px; }
+.tools-calculator-form .input-clean { width: 100%; min-width: 0; }
+.tools-calculator-form .btn-main { margin-top: 3px; }
+.tools-calculator-result { display: block; color: var(--text-main); border-left: 3px solid var(--personal-accent); padding: 10px 0 10px 14px; margin-top: 20px; font-size: 1.04rem; line-height: 1.6; overflow-wrap: anywhere; }
+.tools-calculator-note { font-size: .76rem; color: var(--text-muted); line-height: 1.6; margin-top: 16px; }
+@keyframes personal-editor-enter { from { opacity: .4; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 360px) { .note-editor { padding: 16px 12px; } .note-record-heading { gap: 8px; grid-template-columns: 20px minmax(0, 1fr) auto; } .note-preview, .note-checklist { margin-left: 28px; } .tools-calculator-tabs { gap: 4px; } }
+@media (prefers-reduced-motion: reduce) { .note-editor { animation: none; } }
+[data-motion="reduced"] .note-editor { animation: none; }

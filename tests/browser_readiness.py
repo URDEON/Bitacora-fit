@@ -8,6 +8,7 @@ import os
 import re
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
+from browser_home import navigate
 
 
 BASE_URL = os.environ.get("BITACORA_URL", "http://127.0.0.1:4173")
@@ -28,43 +29,45 @@ with sync_playwright() as p:
     page.wait_for_function("navigator.serviceWorker.controller !== null")
     page.get_by_role("button", name="Agua +250 ml", exact=True).click()
     page.wait_for_function("key => JSON.parse(localStorage.getItem(key)).waterLogs.length === 1", arg=DB_KEY)
-    tabs = ["Inicio", "Entrenar", "Alimentación", "Progreso", "Ajustes"]
+    tabs = ["Inicio", "Entrenar", "Alimentación", "Progreso", "Ajustes", "Finanzas", "Notas", "Herramientas"]
     widths = [320, 390, 620, 768, 1280]
     for width in widths:
         page.set_viewport_size({"width": width, "height": 900})
         for tab in tabs:
-            page.get_by_role("navigation", name="Navegación principal").get_by_role("button", name=tab, exact=True).click()
+            navigate(page, tab)
             assert page.locator(".tab-stage:visible").count() == 1, tab
             assert not page.evaluate("document.documentElement.scrollWidth > innerWidth"), (tab, width)
             expect(page.locator(".tab-stage:visible h1")).to_be_visible()
     page.set_viewport_size({"width": 390, "height": 844})
-    page.get_by_role("button", name="Inicio", exact=True).click()
+    navigate(page, "Inicio")
+    if page.locator("body.dark-mode").count():
+        page.get_by_role("button", name="Activar modo claro", exact=True).click()
     page.screenshot(path=str(ARTIFACTS / "home-light-390.png"), full_page=True)
     page.get_by_role("button", name="Activar modo oscuro", exact=True).click()
     expect(page.locator("body")).to_have_class("dark-mode")
     page.screenshot(path=str(ARTIFACTS / "home-dark-390.png"), full_page=True)
     for tab in tabs:
-        page.get_by_role("navigation", name="Navegación principal").get_by_role("button", name=tab, exact=True).click()
+        navigate(page, tab)
         assert not page.evaluate("document.documentElement.scrollWidth > innerWidth"), (tab, "dark")
     page.reload()
     expect(page.locator("body")).to_have_class("dark-mode")
     # Delete the synchronous fallback only. IndexedDB must restore the record.
     page.evaluate("key => localStorage.removeItem(key)", DB_KEY)
     page.reload()
-    page.get_by_role("button", name="Alimentación", exact=True).click()
+    navigate(page, "Alimentación")
     expect(page.locator(".ticket-row.water")).to_have_count(1)
 
     context.set_offline(True)
     page.reload()
     page.get_by_role("button", name="Agua +250 ml", exact=True).click()
     page.wait_for_function("key => JSON.parse(localStorage.getItem(key)).waterLogs.length === 2", arg=DB_KEY)
-    page.get_by_role("button", name="Entrenar", exact=True).click()
+    navigate(page, "Entrenar")
     if not page.locator(".ex-card-thumb").first.is_visible():
         page.get_by_role("button", name=re.compile(r"^Mostrar catálogo")).click()
     image = page.locator(".ex-card-thumb").first
     expect(image).to_be_visible()
     assert image.evaluate("img => img.complete && img.naturalWidth > 0"), "Exercise images must load offline"
-    page.get_by_role("button", name="Ajustes", exact=True).click()
+    navigate(page, "Ajustes")
     with page.expect_download() as download:
         page.get_by_role("button", name="Crear respaldo (.json)", exact=True).click()
     backup = ARTIFACTS / "backup-offline.json"

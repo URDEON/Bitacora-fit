@@ -1,7 +1,7 @@
 /* Bitácora Fit Pro — one palette, shared semantic states and theme-aware surfaces. */
 :root,
 :root[data-theme="light"] {
-  /* Mineral, charcoal and a restrained terracotta. */
+  /* A mineral light alternative; graphite is the default for new installations. */
   --bg-main: #F5F2EB;
   --brand-launch-dark-background: #0F1114;
   --brand-launch-dark-text: #F5F2EB;
@@ -16,11 +16,11 @@
   --text-on-accent: #FFFFFF;
   --border: #D6D7D1;
   --border-strong: #A5AAA6;
-  --focus-ring: #AD4E38;
+  --focus-ring: #3D4B52;
 
-  --brand-primary: #AD4E38;
-  --brand-primary-hover: #943F2B;
-  --brand-primary-soft: #F3E4DE;
+  --brand-primary: #3D4B52;
+  --brand-primary-hover: #28363D;
+  --brand-primary-soft: #E0E6E8;
   --brand-calm: #52636B;
   --brand-calm-hover: #3F5058;
   --brand-calm-soft: #E5E9E9;
@@ -32,27 +32,33 @@
   --danger-soft: #FDECEB;
 
   /* Glass colors live here so every surface follows the same theme. */
-  --glass-face: rgba(231, 232, 228, .78);
-  --glass-solid: #E8E9E5;
-  --glass-rim: rgba(255, 255, 255, .66);
-  --glass-edge: rgba(64, 73, 72, .22);
-  --glass-highlight: rgba(255, 255, 255, .22);
-  --glass-depth: rgba(32, 35, 33, .12);
-  --glass-shadow: rgba(32, 35, 33, .08);
-  --glass-header: rgba(245, 242, 235, .94);
-  --glass-nav: rgba(229, 231, 227, .91);
-  --glass-nav-solid: #E5E7E3;
-  --glass-nav-text: #525A5C;
-  --glass-nav-active: #F3E4DE;
-  --glass-nav-active-text: #873C2B;
-  --glass-nav-active-edge: rgba(173, 78, 56, .28);
-  --glass-blur: 14px;
+  --glass-face: rgba(233, 236, 235, .54);
+  --glass-solid: #E8ECEB;
+  --glass-rim: rgba(255, 255, 255, .84);
+  --glass-edge: rgba(71, 85, 88, .24);
+  --glass-highlight: rgba(255, 255, 255, .32);
+  --glass-depth: rgba(32, 35, 33, .10);
+  --glass-shadow: rgba(32, 35, 33, .09);
+  --glass-header: rgba(245, 242, 235, .88);
+  --glass-nav: rgba(230, 235, 234, .80);
+  --glass-nav-solid: #E6EBEA;
+  --glass-nav-text: #283338;
+  --glass-nav-active: rgba(255, 255, 255, .62);
+  --glass-nav-active-text: #28363D;
+  --glass-nav-active-edge: rgba(255, 255, 255, .90);
+  --glass-blur: 18px;
+  --glass-saturation: 1.12;
+  --glass-panel: rgba(236, 239, 237, .76);
+  --glass-panel-solid: #ECF0ED;
+  --ambient-haze: rgba(106, 122, 127, .10);
+  --surface-sheen: rgba(255, 255, 255, .26);
+  --overlay-scrim: rgba(14, 18, 20, .38);
 
   /* Measurement illustrations share the brand without sharing a silhouette. */
   --metric-empty: #C6CCC8;
   --metric-water-fill: #C6DCE2;
   --metric-water-edge: #547985;
-  --metric-energy-soft: #EAD0C4;
+  --metric-energy-soft: #DAE2E3;
   --metric-protein-fill: #647D86;
   --metric-protein-core: #E5ECEC;
 
@@ -60,8 +66,8 @@
   --hero-border: #41494C;
   --hero-text: #F5F2EB;
   --hero-muted: #C1C7C6;
-  --hero-cta-bg: #E7A38C;
-  --hero-cta-hover: #F0B5A1;
+  --hero-cta-bg: #D8E1E4;
+  --hero-cta-hover: #EFF4F5;
   --hero-cta-text: #202321;
   --hero-track: #586265;
   --hero-success: #97C7AC;
@@ -86,12 +92,12 @@
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
-  --radius-xs: 2px;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 0;
-  --radius-xl: 0;
-  --radius-pill: 2px;
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 26px;
+  --radius-pill: 999px;
   --dur-fast: 180ms;
   --dur-base: 240ms;
   --dur-slow: 300ms;
@@ -100,22 +106,22 @@
 
 body.dark-mode,
 :root[data-theme="dark"] body {
-  --bg-main: #0F1114;
-  --bg-card: #191D20;
-  --bg-subtle: #252B2F;
-  --bg-input: #191D20;
-  --bg-elevated: rgba(15, 17, 20, .95);
+  --bg-main: #0F1215;
+  --bg-card: #191E22;
+  --bg-subtle: #252C30;
+  --bg-input: #191F23;
+  --bg-elevated: rgba(15, 18, 21, .92);
   --bg-dock: rgba(37, 43, 47, .9);
-  --text-main: #F3F0E9;
-  --text-secondary: #BBC3C4;
-  --text-muted: #A3ADAF;
+  --text-main: #F2F4F3;
+  --text-secondary: #C0C9CD;
+  --text-muted: #A2AFB5;
   --text-on-accent: #202321;
-  --border: #363E42;
-  --border-strong: #646F73;
-  --focus-ring: #E7A38C;
-  --brand-primary: #E7A38C;
-  --brand-primary-hover: #F0B5A1;
-  --brand-primary-soft: #372822;
+  --border: #343E43;
+  --border-strong: #66757B;
+  --focus-ring: #D8E1E4;
+  --brand-primary: #D8E1E4;
+  --brand-primary-hover: #EFF4F5;
+  --brand-primary-soft: #29353A;
   --brand-calm: #ADBCC1;
   --brand-calm-hover: #C5CFD2;
   --brand-calm-soft: #283438;
@@ -125,32 +131,37 @@ body.dark-mode,
   --warning-soft: #3A3021;
   --danger: #FF9E93;
   --danger-soft: #3F2525;
-  --glass-face: rgba(42, 49, 53, .82);
-  --glass-solid: #2A3135;
-  --glass-rim: rgba(255, 255, 255, .12);
-  --glass-edge: rgba(193, 204, 207, .24);
-  --glass-highlight: rgba(255, 255, 255, .04);
-  --glass-depth: rgba(0, 0, 0, .28);
-  --glass-shadow: rgba(0, 0, 0, .2);
-  --glass-header: rgba(15, 17, 20, .95);
-  --glass-nav: rgba(37, 43, 47, .93);
-  --glass-nav-solid: #252B2F;
-  --glass-nav-text: #BBC3C4;
-  --glass-nav-active: #48332B;
-  --glass-nav-active-text: #F0B5A1;
-  --glass-nav-active-edge: rgba(231, 163, 140, .34);
+  --glass-face: rgba(45, 55, 61, .42);
+  --glass-solid: #293339;
+  --glass-rim: rgba(255, 255, 255, .28);
+  --glass-edge: rgba(206, 222, 228, .27);
+  --glass-highlight: rgba(255, 255, 255, .10);
+  --glass-depth: rgba(0, 0, 0, .24);
+  --glass-shadow: rgba(0, 0, 0, .22);
+  --glass-header: rgba(15, 18, 21, .90);
+  --glass-nav: rgba(20, 25, 29, .76);
+  --glass-nav-solid: #293338;
+  --glass-nav-text: #D2DADC;
+  --glass-nav-active: rgba(218, 233, 237, .14);
+  --glass-nav-active-text: #F5F7F7;
+  --glass-nav-active-edge: rgba(231, 243, 246, .32);
+  --glass-panel: rgba(38, 49, 55, .78);
+  --glass-panel-solid: #263137;
+  --ambient-haze: rgba(199, 219, 227, .07);
+  --surface-sheen: rgba(240, 252, 255, .09);
+  --overlay-scrim: rgba(4, 8, 11, .44);
   --metric-empty: #465156;
   --metric-water-fill: #234552;
   --metric-water-edge: #8BB5C2;
-  --metric-energy-soft: #45342D;
+  --metric-energy-soft: #353F44;
   --metric-protein-fill: #9AB5BF;
   --metric-protein-core: #2A3940;
   --hero-bg: #22282C;
   --hero-border: #465054;
   --hero-text: #F3F0E9;
   --hero-muted: #BBC3C4;
-  --hero-cta-bg: #E7A38C;
-  --hero-cta-hover: #F0B5A1;
+  --hero-cta-bg: #D8E1E4;
+  --hero-cta-hover: #EFF4F5;
   --hero-cta-text: #202321;
   --hero-track: #586265;
   --hero-success: #97C7AC;
@@ -161,22 +172,22 @@ body.dark-mode,
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme="auto"] body {
-    --bg-main: #0F1114;
-    --bg-card: #191D20;
-    --bg-subtle: #252B2F;
-    --bg-input: #191D20;
-    --bg-elevated: rgba(15, 17, 20, .95);
+    --bg-main: #0F1215;
+    --bg-card: #191E22;
+    --bg-subtle: #252C30;
+    --bg-input: #191F23;
+    --bg-elevated: rgba(15, 18, 21, .92);
     --bg-dock: rgba(37, 43, 47, .9);
-    --text-main: #F3F0E9;
-    --text-secondary: #BBC3C4;
-    --text-muted: #A3ADAF;
+    --text-main: #F2F4F3;
+    --text-secondary: #C0C9CD;
+    --text-muted: #A2AFB5;
     --text-on-accent: #202321;
-    --border: #363E42;
-    --border-strong: #646F73;
-    --focus-ring: #E7A38C;
-    --brand-primary: #E7A38C;
-    --brand-primary-hover: #F0B5A1;
-    --brand-primary-soft: #372822;
+    --border: #343E43;
+    --border-strong: #66757B;
+    --focus-ring: #D8E1E4;
+    --brand-primary: #D8E1E4;
+    --brand-primary-hover: #EFF4F5;
+    --brand-primary-soft: #29353A;
     --brand-calm: #ADBCC1;
     --brand-calm-hover: #C5CFD2;
     --brand-calm-soft: #283438;
@@ -186,32 +197,37 @@ body.dark-mode,
     --warning-soft: #3A3021;
     --danger: #FF9E93;
     --danger-soft: #3F2525;
-    --glass-face: rgba(42, 49, 53, .82);
-    --glass-solid: #2A3135;
-    --glass-rim: rgba(255, 255, 255, .12);
-    --glass-edge: rgba(193, 204, 207, .24);
-    --glass-highlight: rgba(255, 255, 255, .04);
-    --glass-depth: rgba(0, 0, 0, .28);
-    --glass-shadow: rgba(0, 0, 0, .2);
-    --glass-header: rgba(15, 17, 20, .95);
-    --glass-nav: rgba(37, 43, 47, .93);
-    --glass-nav-solid: #252B2F;
-    --glass-nav-text: #BBC3C4;
-    --glass-nav-active: #48332B;
-    --glass-nav-active-text: #F0B5A1;
-    --glass-nav-active-edge: rgba(231, 163, 140, .34);
+    --glass-face: rgba(45, 55, 61, .42);
+    --glass-solid: #293339;
+    --glass-rim: rgba(255, 255, 255, .28);
+    --glass-edge: rgba(206, 222, 228, .27);
+    --glass-highlight: rgba(255, 255, 255, .10);
+    --glass-depth: rgba(0, 0, 0, .24);
+    --glass-shadow: rgba(0, 0, 0, .22);
+    --glass-header: rgba(15, 18, 21, .90);
+    --glass-nav: rgba(20, 25, 29, .76);
+    --glass-nav-solid: #293338;
+    --glass-nav-text: #D2DADC;
+    --glass-nav-active: rgba(218, 233, 237, .14);
+    --glass-nav-active-text: #F5F7F7;
+    --glass-nav-active-edge: rgba(231, 243, 246, .32);
+    --glass-panel: rgba(38, 49, 55, .78);
+    --glass-panel-solid: #263137;
+    --ambient-haze: rgba(199, 219, 227, .07);
+    --surface-sheen: rgba(240, 252, 255, .09);
+    --overlay-scrim: rgba(4, 8, 11, .44);
     --metric-empty: #465156;
     --metric-water-fill: #234552;
     --metric-water-edge: #8BB5C2;
-    --metric-energy-soft: #45342D;
+    --metric-energy-soft: #353F44;
     --metric-protein-fill: #9AB5BF;
     --metric-protein-core: #2A3940;
     --hero-bg: #22282C;
     --hero-border: #465054;
     --hero-text: #F3F0E9;
     --hero-muted: #BBC3C4;
-    --hero-cta-bg: #E7A38C;
-    --hero-cta-hover: #F0B5A1;
+    --hero-cta-bg: #D8E1E4;
+    --hero-cta-hover: #EFF4F5;
     --hero-cta-text: #202321;
     --hero-track: #586265;
     --hero-success: #97C7AC;
@@ -224,7 +240,7 @@ body.dark-mode,
 /* Aliases are resolved in the themed body as well as the root. */
 :root,
 body {
-  /* Category accents stay slate; green and amber express actual states. */
+  /* Neutral fallbacks; the appearance preference provides accessible custom accents. */
   --brand-nutrition: var(--brand-calm);
   --brand-nutrition-hover: var(--brand-calm-hover);
   --brand-nutrition-soft: var(--brand-calm-soft);
@@ -248,8 +264,8 @@ body {
   --home-surface: var(--glass-face);
   --home-surface-solid: var(--glass-solid);
   --home-ring-track: var(--border);
-  --home-ring-progress: var(--brand-primary);
-  --home-orbit-shadow: 0 8px 24px var(--glass-shadow);
+  --home-ring-progress: var(--custom-progress, var(--brand-primary));
+  --home-orbit-shadow: inset 0 1px 0 var(--glass-rim), inset 0 -9px 24px var(--glass-depth), 0 12px 28px var(--glass-shadow);
   --section-accent: var(--accent);
   --section-accent-soft: var(--accent-soft);
 }
@@ -263,8 +279,8 @@ body {
 [data-section="meals"],
 [data-section="progress"],
 [data-section="export"] {
-  --section-accent: var(--brand-calm);
-  --section-accent-soft: var(--brand-calm-soft);
+  --section-accent: var(--brand-primary);
+  --section-accent-soft: var(--brand-primary-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

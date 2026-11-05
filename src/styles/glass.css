@@ -1,4 +1,5 @@
-/* Glass is reserved for the dock and featured surfaces; everyday controls stay solid. */
+/* Frosted glass is reserved for the dock, the metric and temporary panels.
+   A single backdrop layer per surface keeps Android compositing predictable. */
 :root {
   --dock-clearance: calc(100px + var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px)));
 }
@@ -7,9 +8,9 @@ body { padding-bottom: var(--dock-clearance); }
 .app-header {
   background: var(--glass-header);
   border-bottom-color: var(--border);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 1px 0 var(--glass-rim);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
 }
 
 /* Shallow depth gives controls a clear press without frosting every input. */
@@ -17,22 +18,22 @@ body { padding-bottom: var(--dock-clearance); }
 .pill-action,
 .step-circle {
   min-height: 44px;
-  border: 1px solid var(--border-strong);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
   background: var(--bg-input);
   color: var(--text-main);
-  box-shadow: var(--shadow-xs);
+  box-shadow: inset 0 1px var(--glass-highlight);
   transform: perspective(600px) translate3d(0, 0, 0);
   transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease, background-color var(--dur-fast) ease, border-color var(--dur-fast) ease;
 }
-.header-chrono-pill { border-radius: 14px; }
+.header-chrono-pill { border-radius: var(--radius-pill); }
 .header-chrono-pill.selected,
 .header-chrono-pill.is-running { border-color: var(--accent); background: var(--accent-soft); }
 .btn-main {
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   color: var(--text-on-accent);
   background-image: linear-gradient(180deg, var(--glass-highlight), transparent 75%);
-  box-shadow: inset 0 1px 0 var(--glass-rim), 0 2px 0 var(--glass-depth), 0 4px 10px var(--glass-shadow);
+  box-shadow: inset 0 1px 0 var(--glass-rim), 0 3px 8px var(--glass-shadow);
   transform: perspective(600px) translate3d(0, 0, 0);
   transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease, background-color var(--dur-fast) ease;
 }
@@ -87,6 +88,8 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   transform: translateX(-50%);
 }
 .glass-dock .glass-nav {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 3px;
@@ -94,12 +97,12 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   max-width: none;
   min-height: 64px;
   padding: 6px;
-  border-radius: 24px;
+  border-radius: 28px;
   border: 1px solid var(--glass-edge);
-  background: var(--glass-nav);
-  box-shadow: inset 0 1px 0 var(--glass-rim), 0 8px 24px var(--glass-shadow), 0 2px 4px var(--glass-shadow);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  background: linear-gradient(180deg, var(--glass-highlight), transparent 42%), var(--glass-nav);
+  box-shadow: inset 0 1px 0 var(--glass-rim), inset 0 -1px 0 var(--glass-depth), 0 9px 26px var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation));
 }
 .glass-nav .glass-nav-item {
   isolation: isolate;
@@ -112,7 +115,7 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   min-width: 44px;
   min-height: 50px;
   padding: 8px 4px;
-  border-radius: 18px;
+  border-radius: 22px;
   border: 1px solid transparent;
   color: var(--glass-nav-text);
   background: transparent;
@@ -128,13 +131,13 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   height: auto;
   border-radius: inherit;
   border: 1px solid var(--glass-nav-active-edge);
-  background: var(--glass-nav-active);
+  background: linear-gradient(180deg, var(--glass-highlight), transparent), var(--glass-nav-active);
   box-shadow: inset 0 1px 0 var(--glass-rim), 0 1px 3px var(--glass-shadow);
   opacity: 0;
   transform: scale(.94);
   transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) ease;
 }
-.glass-nav .glass-nav-item.active { flex-grow: 2.4; gap: 6px; color: var(--glass-nav-active-text); background: transparent; }
+.glass-nav .glass-nav-item.active { flex-grow: 2.1; gap: 6px; color: var(--glass-nav-active-text); background: transparent; }
 .glass-nav .glass-nav-item.active::before { opacity: 1; transform: scale(1); }
 .glass-nav .glass-nav-icon { flex: 0 0 23px; position: relative; }
 .glass-nav .glass-nav-label {
@@ -168,6 +171,26 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   from { opacity: .7; transform: translateY(5px); }
   to { opacity: 1; transform: none; }
 }
+
+/* A temporary sheet owns the blur; its dimming overlay remains inexpensive. */
+.modal-backdrop,
+.dialog-backdrop {
+  background: var(--overlay-scrim);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.glass-panel,
+.modal-sheet,
+.dialog-card {
+  border: 1px solid var(--glass-edge);
+  background: linear-gradient(160deg, var(--glass-highlight), transparent 38%), var(--glass-panel);
+  box-shadow: inset 0 1px 0 var(--glass-rim), 0 18px 42px var(--glass-shadow);
+  backdrop-filter: blur(24px) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(24px) saturate(var(--glass-saturation));
+}
+.modal-sheet { border-radius: 28px 28px 0 0; }
+.dialog-card { border-radius: 24px; }
+@media (min-width: 640px) { .modal-sheet { border-radius: 28px; } }
 @media (max-width: 350px) {
   .glass-dock .glass-nav { gap: 2px; }
   .glass-nav .glass-nav-item.active { gap: 4px; }
@@ -182,6 +205,7 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   :root, body, body.dark-mode {
     --glass-face: var(--glass-solid);
     --glass-nav: var(--glass-nav-solid);
+    --glass-panel: var(--glass-panel-solid);
     --glass-header: var(--bg-main);
     --glass-blur: 0px;
   }
@@ -190,11 +214,12 @@ body.dark-mode .btn-main.manual-save:not(.subtle):not(.danger-solid) { color: va
   :root, body, body.dark-mode {
     --glass-face: var(--glass-solid);
     --glass-nav: var(--glass-nav-solid);
+    --glass-panel: var(--glass-panel-solid);
     --glass-header: var(--bg-main);
     --glass-highlight: transparent;
     --glass-blur: 0px;
   }
-  .app-header, .glass-dock .glass-nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .app-header, .glass-dock .glass-nav, .glass-panel, .modal-sheet, .dialog-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
 }
 [data-transparency="reduced"],
 [data-transparency="reduced"] body,
@@ -202,12 +227,16 @@ body.dark-mode[data-transparency="reduced"] {
   --glass-face: var(--glass-solid);
   --home-surface: var(--glass-solid);
   --glass-nav: var(--glass-nav-solid);
+  --glass-panel: var(--glass-panel-solid);
   --glass-header: var(--bg-main);
   --glass-highlight: transparent;
   --glass-blur: 0px;
 }
 [data-transparency="reduced"] .app-header,
-[data-transparency="reduced"] .glass-dock .glass-nav { backdrop-filter: none; -webkit-backdrop-filter: none; }
+[data-transparency="reduced"] .glass-dock .glass-nav,
+[data-transparency="reduced"] .glass-panel,
+[data-transparency="reduced"] .modal-sheet,
+[data-transparency="reduced"] .dialog-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .glass-nav .glass-nav-item,

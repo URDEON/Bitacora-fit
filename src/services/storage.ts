@@ -35,7 +35,7 @@ export function createEmptyDB(): BitacoraDB {
   return {
     version: 5,
     updatedAt: 0,
-    darkMode: false,
+    darkMode: true,
     alarmType: 'bell',
     goals: {
       calories: 2200,

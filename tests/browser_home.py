@@ -17,7 +17,22 @@ DB_KEY = "bitacora_fit_s20fe_v5"
 ARTIFACTS = Path("artifacts/home")
 METRICS = ["Entrenamientos", "Hidratación", "Energía", "Proteína"]
 IDS = ["training", "water", "energy", "protein"]
-TABS = ["Inicio", "Entrenar", "Alimentación", "Progreso", "Ajustes"]
+TABS = ["Inicio", "Entrenar", "Finanzas", "Notas", "Herramientas"]
+
+
+def navigate(page, label):
+    """Exercise the real module navigation and Fit/tool links after the redesign."""
+    primary = page.get_by_role("navigation", name="Navegación principal", exact=True)
+    if label in TABS:
+        primary.get_by_role("button", name=label, exact=True).click()
+    elif label in ["Alimentación", "Progreso", "Cronómetro"]:
+        primary.get_by_role("button", name="Entrenar", exact=True).click()
+        page.get_by_role("navigation", name="Secciones de Fit", exact=True).get_by_role("button", name=label, exact=True).click()
+    elif label in ["Ajustes", "Apariencia"]:
+        primary.get_by_role("button", name="Herramientas", exact=True).click()
+        page.get_by_role("navigation", name="Accesos a herramientas", exact=True).get_by_role("button", name="Apariencia y respaldos", exact=False).click()
+    else:
+        raise ValueError(f"Unknown destination: {label}")
 
 
 def workout(identifier, date, name="Press de banca"):
@@ -75,7 +90,7 @@ def carousel(page):
 
 def active_panel(page, index):
     root = carousel(page)
-    expect(root.get_by_role("group")).to_have_count(1)
+    expect(root.locator('[role="group"][aria-roledescription="diapositiva"]')).to_have_count(1)
     panel = root.get_by_role("group", name=METRICS[index], exact=True)
     expect(panel).to_be_visible()
     expect(panel).to_have_attribute("data-metric", IDS[index])
@@ -105,7 +120,7 @@ def select_metric(page, index):
 
 
 def touch_drag(page, dx, dy=0):
-    panel = carousel(page).get_by_role("group")
+    panel = carousel(page).locator('[role="group"][aria-roledescription="diapositiva"]')
     panel.scroll_into_view_if_needed()
     box = panel.bounding_box()
     # Stay inside the circle; native touch input generates the Android-style
@@ -133,7 +148,7 @@ def assert_home_structure(page):
     navigation = page.get_by_role("navigation", name="Navegación principal", exact=True)
     for tab in TABS:
         expect(navigation.get_by_role("button", name=tab, exact=True)).to_be_visible()
-    assert root.get_by_role("group").evaluate("""el => {
+    assert root.locator('[role="group"][aria-roledescription="diapositiva"]').evaluate("""el => {
       while (el) { if (getComputedStyle(el).touchAction.includes('pan-y')) return true; el = el.parentElement; }
       return false;
     }"""), "El carrusel debe permitir desplazamiento vertical nativo"
@@ -191,7 +206,7 @@ def main():
             active_panel(page, 1)
             carousel(page).get_by_role("button", name="Medición anterior", exact=True).click()
             active_panel(page, 0)
-            carousel(page).get_by_role("group").scroll_into_view_if_needed()
+            carousel(page).locator('[role="group"][aria-roledescription="diapositiva"]').scroll_into_view_if_needed()
             before_scroll = page.evaluate("window.scrollY")
             touch_drag(page, 8, -120)
             active_panel(page, 0)

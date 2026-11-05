@@ -23,6 +23,7 @@ import { popSubviewHistory, pushSubviewHistory, ViewBackController } from '../se
 interface ProgressHistoryViewProps {
   db: BitacoraDB;
   currentDate: string;
+  openWeightRequest?: number;
   onSelectDate: (date: string) => void;
   onOpenDateInTab: (date: string, tab?: ActiveTab) => void;
   onSaveBodyMetric: (entry: Omit<BodyMetricEntry, 'id'>, editingId: number | null) => void;
@@ -206,6 +207,7 @@ type ProgressSection = 'weight' | 'charts' | 'calendar' | 'history';
 export const ProgressHistoryView: React.FC<ProgressHistoryViewProps> = ({
   db,
   currentDate,
+  openWeightRequest,
   onSelectDate,
   onOpenDateInTab,
   onSaveBodyMetric,
@@ -229,6 +231,14 @@ export const ProgressHistoryView: React.FC<ProgressHistoryViewProps> = ({
   const [metricTime, setMetricTime] = useState(() => new Date().toTimeString().slice(0, 5));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const weightFormRef = React.useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!openWeightRequest) return;
+    setSection('weight');
+    requestAnimationFrame(() => {
+      weightFormRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+      weightFormRef.current?.querySelector<HTMLInputElement>('#body-weight')?.focus({ preventScroll: true });
+    });
+  }, [openWeightRequest]);
   const error = (name: string) => errors[name] ? <p className="field-error" id={`${name}-error`} role="alert">{errors[name]}</p> : null;
   useEffect(() => { if (editingWeightId === null) setMetricDate(currentDate); }, [currentDate]);
   useEffect(() => { setCalMonthISO(currentDate.slice(0, 7)); }, [currentDate]);
@@ -610,7 +620,7 @@ export const ProgressHistoryView: React.FC<ProgressHistoryViewProps> = ({
                 value: b.weightKg,
                 sub: b.waistCm ? `${b.waistCm}cm cintura` : undefined,
               }))}
-              color="var(--accent-amber)"
+              color="var(--custom-charts, var(--brand-progress))"
               unit="kg"
               goalLine={db.goals.targetWeightKg}
             />
@@ -808,7 +818,7 @@ export const ProgressHistoryView: React.FC<ProgressHistoryViewProps> = ({
             <MiniLineChart
               key={activeExName}
               points={strengthChartPoints}
-              color="var(--accent)"
+              color="var(--custom-charts, var(--brand-progress))"
               unit="kg"
             />
           </section>
@@ -826,7 +836,7 @@ export const ProgressHistoryView: React.FC<ProgressHistoryViewProps> = ({
             </div>
             <MiniLineChart
               points={kcalChartPoints}
-              color="var(--accent-green)"
+              color="var(--custom-charts, var(--brand-progress))"
               unit="kcal"
               goalLine={db.goals.calories}
             />

@@ -139,7 +139,7 @@ def main():
             assert_identity(page, 0)
             touch_drag(page, -12)
             assert_identity(page, 0)
-            carousel(page).get_by_role("group").scroll_into_view_if_needed()
+            carousel(page).locator('[role="group"][aria-roledescription="diapositiva"]').scroll_into_view_if_needed()
             before = page.evaluate("window.scrollY")
             touch_drag(page, 8, -120)
             assert_identity(page, 0)

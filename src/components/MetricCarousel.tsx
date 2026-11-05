@@ -3,13 +3,15 @@ import { ArrowLeft, ArrowRight, Dumbbell, Droplets, Flame, Utensils } from 'luci
 import type { ActiveTab } from '../types';
 import { metricProgress, type HomeMetric } from '../services/homeMetrics';
 import { MetricVisual } from './MetricVisual';
+import { MetricHistory } from './MetricHistory';
+import type { MetricHistorySeries } from '../services/metricHistory';
 
-interface Props { metrics: HomeMetric[]; onNavigate: (tab: ActiveTab) => void; }
+interface Props { metrics: HomeMetric[]; onNavigate: (tab: ActiveTab) => void; histories?: MetricHistorySeries[]; }
 interface Gesture { id: number; x: number; y: number; axis: 'x' | 'y' | null; }
 const icons = { training: Dumbbell, water: Droplets, energy: Flame, protein: Utensils };
 const number = (value: number) => value.toLocaleString('es', { maximumFractionDigits: 1 });
 
-export function MetricCarousel({ metrics, onNavigate }: Props) {
+export function MetricCarousel({ metrics, onNavigate, histories }: Props) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const gesture = useRef<Gesture | null>(null);
@@ -17,6 +19,7 @@ export function MetricCarousel({ metrics, onNavigate }: Props) {
   const metric = metrics[index] ?? metrics[0];
   if (!metric) return null;
   const Icon = icons[metric.id];
+  const history = histories?.find(series => series.id === metric.id);
   const { percent, ringPercent } = metricProgress(metric.value, metric.goal);
   const percentage = percent === null ? 'Meta sin configurar' : `${number(percent)} %`;
   const goal = metric.goal === null ? 'Configura tu objetivo en Ajustes' : `Meta: ${number(metric.goal)} ${metric.unit}`;
@@ -114,6 +117,7 @@ export function MetricCarousel({ metrics, onNavigate }: Props) {
         <button type="button" className="metric-arrow" aria-label="Medición siguiente" aria-controls={panelId} onClick={() => select(index + 1, 1)}><ArrowRight size={19} aria-hidden="true" /></button>
       </div>
       <div className="metric-footer"><span>Desliza para cambiar</span><button type="button" className="text-button" onClick={() => onNavigate(metric.tab)}>Ver registros <ArrowRight size={14} aria-hidden="true" /></button></div>
+      {history && <MetricHistory key={metric.id} series={history} />}
       <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{metric.name}: {number(metric.value)} {metric.unit}. {percentage}. Medición {index + 1} de {metrics.length}.</p>
     </section>
   );

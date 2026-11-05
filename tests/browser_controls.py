@@ -151,7 +151,7 @@ with sync_playwright() as p:
         nav.get_by_role("button", name="Entrenar", exact=True).click()
 
         # Labels remain accessible even when inactive navigation labels are visually compact.
-        labels = ["Inicio", "Entrenar", "Alimentación", "Progreso", "Ajustes"]
+        labels = ["Inicio", "Entrenar", "Finanzas", "Notas", "Herramientas"]
         for width in [320, 384, 768]:
             page.set_viewport_size({"width": width, "height": 850})
             for label in labels:

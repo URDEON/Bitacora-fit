@@ -228,4 +228,4 @@ export interface FoodReferenceItem {
   fat: number;
 }
 
-export type ActiveTab = 'home' | 'exercises' | 'meals' | 'chrono' | 'progress' | 'export';
+export type ActiveTab = 'home' | 'exercises' | 'meals' | 'chrono' | 'progress' | 'export' | 'finance' | 'notes' | 'tools';

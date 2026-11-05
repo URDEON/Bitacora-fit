@@ -1,0 +1,43 @@
+.quick-register-fab { position: fixed; z-index: 26; right: max(18px, calc((100vw - 760px) / 2)); bottom: calc(var(--dock-clearance) + 8px); display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 56px; min-height: 52px; padding: 12px 18px; border: 1px solid var(--glass-rim); border-radius: 40px; background: var(--brand-primary); color: var(--text-on-accent); box-shadow: inset 0 1px var(--glass-rim), 0 6px 22px var(--glass-shadow); font-weight: 600; transition: transform 180ms ease, background-color 180ms ease; }
+.quick-register-fab:active { transform: scale(.96); }
+.quick-register-dialog { position: fixed; inset: auto 0 0; width: min(100% - 20px, 480px); max-height: min(85dvh, 720px); margin: auto auto max(10px, env(safe-area-inset-bottom, 0px)); padding: 0; border: 0; border-radius: 30px; background: transparent; color: var(--text-main); overflow: visible; }
+.quick-register-dialog::backdrop { background: rgba(0, 0, 0, .45); }
+/* A native dialog is a backdrop root: frost the dialog itself, not a nested child. */
+.quick-register-dialog.glass-panel { background: linear-gradient(160deg, var(--glass-highlight), transparent 38%), var(--glass-panel); border: 1px solid var(--glass-edge); }
+.quick-register-surface { max-height: min(85dvh, 720px); padding: 12px 20px 22px; border-radius: 30px; overflow-y: auto; overscroll-behavior: contain; }
+.quick-register-dialog[open] .quick-register-surface { animation: quick-sheet-arrive 280ms var(--ease-out); }
+.sheet-handle { display: block; width: 38px; height: 4px; border-radius: 10px; margin: 0 auto 20px; background: var(--text-muted); opacity: .6; }
+.quick-register-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.quick-register-heading h2 { font-size: 1.45rem; font-weight: 600; letter-spacing: -.04em; }
+.quick-register-heading .eyebrow { margin: 0 0 5px; font-size: .6rem; }
+.quick-register-heading .icon-btn { flex-shrink: 0; border: 1px solid var(--glass-edge); border-radius: 50%; }
+.quick-register-list { display: flex; flex-direction: column; }
+.quick-register-list > button { display: grid; grid-template-columns: 38px minmax(0, 1fr) 18px; align-items: center; gap: 10px; padding: 14px 0; min-height: 66px; border: 0; border-bottom: 1px solid var(--glass-edge); background: transparent; color: var(--text-main); text-align: left; }
+.quick-register-list > button:last-child { border-bottom: 0; }
+.quick-register-list > button:active { background: var(--glass-highlight); }
+.quick-register-list strong { display: block; font-size: .9rem; font-weight: 500; }
+.quick-register-list small { display: block; margin-top: 3px; font-size: .73rem; color: var(--text-secondary); }
+.quick-register-icon { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--glass-edge); border-radius: 50%; background: var(--glass-highlight); color: var(--custom-icons, var(--text-main)); }
+body { padding-bottom: calc(var(--dock-clearance) + 76px); }
+.metric-footer { padding-inline-end: 64px; }
+.home-personal { border-top: 1px solid var(--border); }
+.home-personal-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) 18px; width: 100%; align-items: center; gap: 12px; padding: 17px 0; min-height: 68px; background: transparent; border: 0; border-bottom: 1px solid var(--border); color: var(--text-main); text-align: left; }
+.home-personal-row strong, .home-personal-row small { display: block; }
+.home-personal-row strong { font-size: .95rem; font-weight: 550; }
+.home-personal-row small { margin-top: 4px; font-size: .77rem; color: var(--text-secondary); }
+.home-personal-row[data-module="finance"] > svg:first-child { color: var(--custom-finance, var(--brand-primary)); }
+.home-personal-row[data-module="notes"] > svg:first-child { color: var(--custom-notes, var(--brand-primary)); }
+.home-pending-tasks { list-style: none; padding: 12px 0; }
+.home-pending-tasks li { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; color: var(--text-secondary); font-size: .8rem; overflow-wrap: anywhere; }
+.home-task-dot { flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--custom-notes, var(--brand-primary)); }
+.fit-shortcuts { display: flex; gap: 5px; padding: 5px 0 14px; margin-bottom: 8px; overflow-x: auto; scrollbar-width: none; }
+.fit-shortcuts button { flex: 1 0 auto; min-height: 44px; padding: 8px 12px; border: 1px solid transparent; border-radius: 30px; background: transparent; color: var(--text-secondary); font-size: .78rem; }
+.fit-shortcuts button[aria-current="page"] { color: var(--custom-fit, var(--brand-primary)); background: var(--custom-fit-soft, var(--brand-primary-soft)); border-color: var(--glass-edge); box-shadow: inset 0 1px var(--glass-rim); }
+.fit-shortcuts::-webkit-scrollbar { display: none; }
+@keyframes quick-sheet-arrive { from { opacity: .2; transform: translateY(36px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 719px) { .quick-register-fab { right: 14px; width: 52px; min-width: 52px; padding: 12px; } .quick-register-fab span { display: none; } }
+@media (max-width: 360px) { .quick-register-surface { padding-inline: 16px; } }
+@media (prefers-reduced-motion: reduce) { .quick-register-fab { transition: none; } .quick-register-fab:active { transform: none; } .quick-register-dialog[open] .quick-register-surface { animation: none; } }
+[data-motion="reduced"] .quick-register-fab { transition: none; }
+[data-motion="reduced"] .quick-register-fab:active { transform: none; }
+[data-motion="reduced"] .quick-register-dialog[open] .quick-register-surface { animation: none; }

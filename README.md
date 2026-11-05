@@ -43,7 +43,7 @@ python tests/browser_controls.py
 
 ## Android
 
-[Descargar la APK 5.0.5](./releases/Bitacora-Fit-Pro-5.0.5.apk) o su [alternativa ZIP](./releases/Bitacora-Fit-Pro-5.0.5-instalar.zip). Consulta las [instrucciones de instalación y respaldo](./releases/README.md).
+[Descargar la APK 5.1.0](./releases/Bitacora-Fit-Pro-5.1.0.apk) o su [alternativa ZIP](./releases/Bitacora-Fit-Pro-5.1.0-instalar.zip). Consulta las [instrucciones de instalación y respaldo](./releases/README.md).
 
 Requiere JDK 21 y Android SDK 36. Con el SDK configurado:
 
@@ -55,6 +55,13 @@ cd android
 ```
 
 En Linux, si el ZIP original perdió el permiso de ejecución: `chmod +x android/gradlew`. El APK de depuración se genera en `android/app/build/outputs/apk/debug/`. Para distribuir una actualización sobre una instalación existente hay que conservar la misma clave de firma. Las instrucciones históricas de la entrega original se conservan en `ANDROID.md` y `ENTREGA.md`.
+
+## Cambios de la versión 5.1.0
+
+- Grafito y vidrio neutro en navegación, círculo y paneles; listas y gráficos abiertos, con alternativas de transparencia y movimiento reducido.
+- Diez acentos HEX con vista previa, persistencia y respaldo de apariencia; historial real de siete días por medición y registro rápido inferior.
+- Finanzas en CLP, notas, tareas y herramientas de porcentajes, presupuesto y ahorro. Finanzas y Notas tienen su propio respaldo desde Herramientas; los respaldos de Fit conservan su formato.
+- La barra principal reúne Inicio, Fit, Finanzas, Notas y Herramientas. Alimentación y Progreso siguen en Fit; Apariencia y los respaldos de Fit están en Herramientas → Apariencia y respaldos.
 
 ## Cambios de la versión 5.0.5
 

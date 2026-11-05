@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Dumbbell, Home, Settings, TrendingUp, Utensils } from 'lucide-react';
+import { Dumbbell, Home, LayoutGrid, NotebookPen, ChartNoAxesColumn } from 'lucide-react';
 import type { ActiveTab } from '../types';
 
 interface Props {
@@ -9,10 +9,10 @@ interface Props {
 
 const items = [
   { id: 'home', label: 'Inicio', icon: Home },
-  { id: 'exercises', label: 'Entrenar', icon: Dumbbell },
-  { id: 'meals', label: 'Alimentación', icon: Utensils },
-  { id: 'progress', label: 'Progreso', icon: TrendingUp },
-  { id: 'export', label: 'Ajustes', icon: Settings },
+  { id: 'exercises', label: 'Fit', icon: Dumbbell },
+  { id: 'finance', label: 'Finanzas', icon: ChartNoAxesColumn },
+  { id: 'notes', label: 'Notas', icon: NotebookPen },
+  { id: 'tools', label: 'Herramientas', icon: LayoutGrid },
 ] as const;
 
 /** The press follows the touch point; scrolling and release leave no running animation. */
@@ -36,6 +36,7 @@ function useGlassPress() {
 
 export function GlassNavigation({ active, onNavigate }: Props) {
   useGlassPress();
+  const selected = ['meals', 'progress', 'chrono'].includes(active) ? 'exercises' : active === 'export' ? 'tools' : active;
   return (
     <nav className="bottom-dock glass-dock" aria-label="Navegación principal">
       <div className="dock-grid glass-nav">
@@ -43,15 +44,15 @@ export function GlassNavigation({ active, onNavigate }: Props) {
           <button
             key={id}
             type="button"
-            className={`nav-item glass-nav-item${active === id ? ' active' : ''}`}
-            aria-label={label}
-            aria-current={active === id ? 'page' : undefined}
+            className={`nav-item glass-nav-item${selected === id ? ' active' : ''}`}
+            aria-label={id === 'exercises' ? 'Entrenar' : label}
+            aria-current={selected === id ? 'page' : undefined}
             title={label}
             onClick={() => onNavigate(id)}
           >
             <Icon className="glass-nav-icon" size={23} strokeWidth={1.8} aria-hidden="true" />
             <span className="glass-nav-label" aria-hidden="true">
-              {id === 'meals' ? <><span className="glass-label-full">{label}</span><span className="glass-label-compact">Comidas</span></> : label}
+              {id === 'tools' ? <><span className="glass-label-full">{label}</span><span className="glass-label-compact">Más</span></> : label}
             </span>
           </button>
         ))}

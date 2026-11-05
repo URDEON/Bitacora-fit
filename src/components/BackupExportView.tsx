@@ -5,10 +5,8 @@ import {
   FileSpreadsheet,
   FileText,
   HardDriveDownload,
-  Moon,
   RotateCcw,
   ShieldCheck,
-  Sun,
   Upload,
 } from 'lucide-react';
 import { BitacoraDB, DailyGoals } from '../types';
@@ -25,7 +23,6 @@ import { useDialog } from './ConfirmDialog';
 interface BackupExportViewProps {
   db: BitacoraDB;
   currentDate: string;
-  onToggleDarkMode?: () => void;
   onRestoreBackup: (incoming: BitacoraDB, mode: 'merge' | 'replace') => void;
   onUpdateAllGoals: (goals: DailyGoals) => void;
   onNotify: (msg: string) => void;
@@ -35,7 +32,6 @@ interface BackupExportViewProps {
 export const BackupExportView: React.FC<BackupExportViewProps> = ({
   db,
   currentDate,
-  onToggleDarkMode,
   onRestoreBackup,
   onUpdateAllGoals,
   onNotify,
@@ -146,46 +142,6 @@ export const BackupExportView: React.FC<BackupExportViewProps> = ({
 
   return (
     <div className="fade-view">
-      {/* 1. APARIENCIA REAL (CLARO / OSCURO PERSISTENTE) */}
-      {onToggleDarkMode && (
-        <section className="card-soft" aria-labelledby="appearance-title">
-          <div className="block-head">
-            <div>
-              <h2 id="appearance-title" className="block-title">
-                Apariencia
-              </h2>
-              <p className="block-subtitle">
-                Elige el contraste visual para interiores de gimnasio o lectura diurna.
-              </p>
-            </div>
-          </div>
-          <div className="appearance-grid">
-            <button
-              type="button"
-              className={`appearance-option ${!db.darkMode ? 'active' : ''}`}
-              aria-pressed={!db.darkMode}
-              onClick={() => {
-                if (db.darkMode) onToggleDarkMode();
-              }}
-            >
-              <Sun size={19} />
-              <span>Modo claro</span>
-            </button>
-            <button
-              type="button"
-              className={`appearance-option ${db.darkMode ? 'active' : ''}`}
-              aria-pressed={db.darkMode}
-              onClick={() => {
-                if (!db.darkMode) onToggleDarkMode();
-              }}
-            >
-              <Moon size={19} />
-              <span>Modo oscuro</span>
-            </button>
-          </div>
-        </section>
-      )}
-
       {/* 2. MIS OBJETIVOS DIARIOS + CALCULADORA ORIENTATIVA PLEGABLE */}
       <section className="card-soft" aria-labelledby="goals-settings-title">
         <div className="block-head">
@@ -369,7 +325,7 @@ export const BackupExportView: React.FC<BackupExportViewProps> = ({
           <div>
             <h2 id="backup-settings-title" className="block-title">
               <ShieldCheck size={19} style={{ color: 'var(--accent-green)' }} />
-              Copias de seguridad locales
+              Copias de seguridad de Fit
             </h2>
             <p className="block-subtitle">
               Tus datos viven en este dispositivo sin conexión. Exporta respaldos <code>.json</code> periódicamente para conservarlos si cambias de teléfono.
